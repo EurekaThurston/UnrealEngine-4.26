@@ -48,8 +48,15 @@ Texture2D BloomTexture;
 SamplerState BloomSampler;
 
 // Start Eureka
-// xyz:EurekaSceneColorTint.rgb, w:unused
+float EurekaSceneColorDesaturate;
 float4 EurekaSceneColorTint;
+// Distance based color grading
+// uint EurekaUseDistanceBasedGrading;
+// float EurekaColorGradingFalloffDistance;
+// float EurekaDistanceBasedDesaturateFar;
+// float EurekaDistanceBasedDesaturateNear;
+// float4 EurekaDistanceBasedTintFar;
+// float4 EurekaDistanceBasedTintNear;
 // End Eureka
 
 // xyz:SceneColorTint.rgb, w:unused
@@ -80,6 +87,16 @@ SamplerState BloomDirtMaskSampler;
 
 float4 LensPrincipalPointOffsetScale;
 float4 LensPrincipalPointOffsetScaleInverse;
+
+// Moved to Common.ush
+// Start Eureka
+// half3 DesaturateColor(half3 InLDRColor, float Fraction)
+// {
+// 	half3 grey = dot(InLDRColor, half3(0.3f, 0.59f, 0.11f));
+// 	return lerp(InLDRColor, grey, Fraction);
+// }
+//
+// // End Eureka
 
 half GrainFromUV(float2 GrainUV) 
 {
@@ -526,8 +543,7 @@ float4 TonemapCommonPS(
 			// Try to kill negatives and NaNs here
 			SceneColor.rgb = max(SceneColor.rgb, 0); 
 		#endif
-	
-		half3 LinearColor = SceneColor.rgb * ColorScale0.rgb * EurekaSceneColorTint.rgb;
+		half3 LinearColor = SceneColor.rgb * ColorScale0.rgb;
 
 		#if USE_BLOOM
 			float2 BloomUV = ColorToBloom_Scale * UV + ColorToBloom_Bias;
@@ -674,6 +690,9 @@ void MainPS(
 	)
 {
     OutColor = TonemapCommonPS(UV, InExposureScaleVignette, GrainUV, ScreenPos, FullViewUV, SvPosition);
+	// Start Eureka
+	OutColor = float4(DesaturateColor(OutColor, EurekaSceneColorDesaturate) * EurekaSceneColorTint, 1.0);
+	// End Eureka
 }
 
 #if COMPUTESHADER

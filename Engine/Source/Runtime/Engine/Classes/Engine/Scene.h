@@ -680,8 +680,27 @@ struct FPostProcessSettings
 	// first all bOverride_... as they get grouped together into bitfields
 
 	// Start Eureka
+	// Global Settings
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaPPVPositionWS:1;
+	// Color Grading
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaSceneColorDesaturate:1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
 	uint8 bOverride_EurekaSceneColorTint:1;
+	// Distance based color grading
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaUseDistanceBasedColorGrading:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaColorGradingFalloffDistance:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaDistanceBasedColorDesaturateFar:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaDistanceBasedColorDesaturateNear:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaDistanceBasedColorTintFar:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaDistanceBasedColorTintNear:1;
 	// End Eureka
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
@@ -1210,8 +1229,27 @@ struct FPostProcessSettings
 	// -----------------------------------------------------------------------
 
 	// Start Eureka
-	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaSceneColorTint", DisplayName = "Eureka Scene Color Tint"))
+	// Global paramters for Eureka features
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Global Parameters", meta = (EditCondition = "bOverride_EurekaPPVPositionWS", DisplayName = "World Position of this Post Process Volume"))
+	FVector EurekaPPVPositionWS;
+	// Color Grading
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaSceneColorDesaturate", DisplayName = "Scene Color Desaturate"))
+	float EurekaSceneColorDesaturate;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaSceneColorTint", DisplayName = "Scene Color Tint"))
 	FLinearColor EurekaSceneColorTint;
+	// Distance based color grading
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaUseDistanceBasedColorGrading", DisplayName = "Use Disatance Based Scene Color Grading"))
+	uint32 EurekaUseDistanceBasedColorGrading : 1;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaColorGradingFalloffDistance", DisplayName = "Falloff Distance"))
+	float EurekaColorGradingFalloffDistance;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaDistanceBasedColorDesaturateFar", DisplayName = "Desaturate Far"))
+	float EurekaDistanceBasedColorDesaturateFar;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaDistanceBasedColorDesaturateNear", DisplayName = "Desaturate Near"))
+	float EurekaDistanceBasedColorDesaturateNear;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaDistanceBasedColorTintFar", DisplayName = "Tint Far"))
+	FLinearColor EurekaDistanceBasedColorTintFar;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaDistanceBasedColorTintNear", DisplayName = "Tint Near"))
+	FLinearColor EurekaDistanceBasedColorTintNear;
 	// End Eureka
 
 	/** Enable HQ Gaussian on high end mobile platforms. (ES3_1) */

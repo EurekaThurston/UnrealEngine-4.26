@@ -1799,3 +1799,11 @@ float4 GatherDepth(Texture2D Texture, float2 UV)
 }
 
 #endif
+
+// Start Eureka
+float3 DesaturateColor(float3 InColor, float Fraction)
+{
+	float3 Grey = dot(InColor, float3(0.3f, 0.59f, 0.11f));
+	return lerp(InColor, Grey, Fraction);
+}
+// End Eureka

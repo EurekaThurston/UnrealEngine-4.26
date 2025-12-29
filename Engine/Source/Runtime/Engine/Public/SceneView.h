@@ -760,6 +760,13 @@ enum ETranslucencyVolumeCascade
 	VIEW_UNIFORM_BUFFER_MEMBER(uint32, EnableSkyLight) \
 	VIEW_UNIFORM_BUFFER_MEMBER(uint32, HairRenderInfoBits) \
 	VIEW_UNIFORM_BUFFER_MEMBER(uint32, HairComponents) \
+	VIEW_UNIFORM_BUFFER_MEMBER(uint32, EurekaUseDistanceBasedGrading) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FVector, EurekaPPVPositionWS) \
+	VIEW_UNIFORM_BUFFER_MEMBER(float, EurekaColorGradingFalloffDistance) \
+	VIEW_UNIFORM_BUFFER_MEMBER(float, EurekaDistanceBasedDesaturateFar) \
+	VIEW_UNIFORM_BUFFER_MEMBER(float, EurekaDistanceBasedDesaturateNear) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaDistanceBasedTintFar) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaDistanceBasedTintNear) \
 
 #define VIEW_UNIFORM_BUFFER_MEMBER(type, identifier) \
 	SHADER_PARAMETER(type, identifier)

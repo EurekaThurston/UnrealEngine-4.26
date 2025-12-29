@@ -1537,6 +1537,17 @@ void FPixelShaderInOut_MainPS(
 		View.VTFeedbackBuffer
 	);
 #endif
+	// Start Eureka
+	if (View.EurekaUseDistanceBasedGrading)
+	{
+		float Distance = distance(MaterialParameters.AbsoluteWorldPosition, View.EurekaPPVPositionWS);
+		float Falloff =  saturate(Distance / max(View.EurekaColorGradingFalloffDistance, 0.00001f));
+		float FinalDesaturation = lerp(View.EurekaDistanceBasedDesaturateNear, View.EurekaDistanceBasedDesaturateFar, Falloff);
+		float3 FinalColorTint = lerp(View.EurekaDistanceBasedTintNear, View.EurekaDistanceBasedTintFar, Falloff);
+		
+		Out.MRT[0] = float4(DesaturateColor(Out.MRT[0], FinalDesaturation) * FinalColorTint, 1.0f);
+	}
+	// End Eureka
 }
 
 // If virtual texture is enabled then use early depth test so that UAV feedback buffer writes respect the depth test

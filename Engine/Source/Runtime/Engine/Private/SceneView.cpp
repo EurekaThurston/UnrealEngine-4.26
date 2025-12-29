@@ -1285,6 +1285,7 @@ bool FSceneView::ProjectWorldToScreen(const FVector& WorldPosition, const FIntRe
 
 
 #define LERP_PP(NAME) if(Src.bOverride_ ## NAME)	Dest . NAME = FMath::Lerp(Dest . NAME, Src . NAME, Weight);
+#define OVERRIDE_PP(NAME) if(Src.bOverride_ ## NAME)	Dest . NAME = Src . NAME;
 #define IF_PP(NAME) if(Src.bOverride_ ## NAME && Src . NAME)
 
 // @param Weight 0..1
@@ -1309,7 +1310,18 @@ void FSceneView::OverridePostProcessSettings(const FPostProcessSettings& Src, fl
 		// The following code needs to be adjusted when settings in FPostProcessSettings change.
 		
 		// Start Eureka
+		// Global Settings
+		OVERRIDE_PP(EurekaPPVPositionWS);
+		// Color Grading
+		LERP_PP(EurekaSceneColorDesaturate);
 		LERP_PP(EurekaSceneColorTint);
+		// Distance based color grading
+		OVERRIDE_PP(EurekaUseDistanceBasedColorGrading);
+		LERP_PP(EurekaColorGradingFalloffDistance);
+		LERP_PP(EurekaDistanceBasedColorDesaturateFar);
+		LERP_PP(EurekaDistanceBasedColorDesaturateNear);
+		LERP_PP(EurekaDistanceBasedColorTintFar);
+		LERP_PP(EurekaDistanceBasedColorTintNear);
 		// End Eureka
 		
 		LERP_PP(WhiteTemp);
@@ -1447,7 +1459,7 @@ void FSceneView::OverridePostProcessSettings(const FPostProcessSettings& Src, fl
 		LERP_PP(ScreenSpaceReflectionQuality);
 		LERP_PP(ScreenSpaceReflectionIntensity);
 		LERP_PP(ScreenSpaceReflectionMaxRoughness);
-
+		
 		// Ray Tracing
 		if (Src.bOverride_ReflectionsType)
 		{
@@ -2358,6 +2370,16 @@ void FSceneView::SetupCommonViewUniformBufferParameters(
 
 #endif
 
+	// Start Eureka
+	ViewUniformShaderParameters.EurekaPPVPositionWS = FinalPostProcessSettings.EurekaPPVPositionWS;
+	ViewUniformShaderParameters.EurekaUseDistanceBasedGrading = FinalPostProcessSettings.EurekaUseDistanceBasedColorGrading;
+	ViewUniformShaderParameters.EurekaColorGradingFalloffDistance = FinalPostProcessSettings.EurekaColorGradingFalloffDistance;
+	ViewUniformShaderParameters.EurekaDistanceBasedDesaturateFar = FinalPostProcessSettings.EurekaDistanceBasedColorDesaturateFar;
+	ViewUniformShaderParameters.EurekaDistanceBasedDesaturateNear = FinalPostProcessSettings.EurekaDistanceBasedColorDesaturateNear;
+	ViewUniformShaderParameters.EurekaDistanceBasedTintFar = FinalPostProcessSettings.EurekaDistanceBasedColorTintFar;
+	ViewUniformShaderParameters.EurekaDistanceBasedTintNear = FinalPostProcessSettings.EurekaDistanceBasedColorTintNear;
+	//End Eureka
+	
 	ViewUniformShaderParameters.NumSceneColorMSAASamples = NumMSAASamples;
 	ViewUniformShaderParameters.ViewToTranslatedWorld = InViewMatrices.GetOverriddenInvTranslatedViewMatrix();
 	ViewUniformShaderParameters.TranslatedWorldToClip = InViewMatrices.GetTranslatedViewProjectionMatrix();

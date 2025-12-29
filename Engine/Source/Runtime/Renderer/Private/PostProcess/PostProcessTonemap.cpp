@@ -510,6 +510,9 @@ FFilmGrainParameters GetFilmGrainParameters(const FViewInfo& View)
 
 BEGIN_SHADER_PARAMETER_STRUCT(FTonemapParameters, )
 	SHADER_PARAMETER_STRUCT_REF(FViewUniformShaderParameters, View)
+	// Start Eureka
+	// SHADER_PARAMETER_STRUCT_REF(FSceneTexturesUniformParameters, SceneTextures)
+	// End Eureka
 	SHADER_PARAMETER_STRUCT_INCLUDE(FFilmGrainParameters, FilmGrain)
 	SHADER_PARAMETER_STRUCT_INCLUDE(FTonemapperOutputDeviceParameters, OutputDevice)
 	SHADER_PARAMETER_STRUCT(FScreenPassTextureViewportParameters, Color)
@@ -527,7 +530,15 @@ BEGIN_SHADER_PARAMETER_STRUCT(FTonemapParameters, )
 	SHADER_PARAMETER_SAMPLER(SamplerState, ColorGradingLUTSampler)
 	SHADER_PARAMETER_SAMPLER(SamplerState, BloomDirtMaskSampler)
 	// Start Eureka
+	SHADER_PARAMETER(float, EurekaSceneColorDesaturate)
 	SHADER_PARAMETER(FVector4, EurekaSceneColorTint)
+	// Distance based color grading
+	// SHADER_PARAMETER(uint32, EurekaUseDistanceBasedGrading)
+	// SHADER_PARAMETER(float, EurekaColorGradingFalloffDistance)
+	// SHADER_PARAMETER(float, EurekaDistanceBasedDesaturateFar)
+	// SHADER_PARAMETER(float, EurekaDistanceBasedDesaturateNear)
+	// SHADER_PARAMETER(FVector4, EurekaDistanceBasedTintFar)
+	// SHADER_PARAMETER(FVector4, EurekaDistanceBasedTintNear)
 	// End Eureka
 	SHADER_PARAMETER(FVector4, ColorScale0)
 	SHADER_PARAMETER(FVector4, ColorScale1)
@@ -762,6 +773,8 @@ FScreenPassTexture AddTonemapPass(FRDGBuilder& GraphBuilder, const FViewInfo& Vi
 	CommonParameters.ColorGradingLUTSampler = BilinearClampSampler;
 	CommonParameters.BloomDirtMaskSampler = BilinearClampSampler;
 	// Start Eureka
+	// Color grading
+	CommonParameters.EurekaSceneColorDesaturate = PostProcessSettings.EurekaSceneColorDesaturate;
 	CommonParameters.EurekaSceneColorTint = PostProcessSettings.EurekaSceneColorTint;
 	// End Eureka
 	CommonParameters.ColorScale0 = PostProcessSettings.SceneColorTint;
@@ -882,6 +895,7 @@ class FMobileTonemapPS : public FGlobalShader
 
 	BEGIN_SHADER_PARAMETER_STRUCT(FParameters, )
 		// Start Eureka
+		SHADER_PARAMETER(float, EurekaSceneColorDesaturate)
 		SHADER_PARAMETER(FVector4, EurekaSceneColorTint)
 		// End Eureka
 		SHADER_PARAMETER(FVector4, ColorScale0)
@@ -1233,7 +1247,8 @@ FScreenPassTexture AddMobileTonemapperPass(FRDGBuilder& GraphBuilder, const FVie
 	PSShaderParameters->RenderTargets[0] = Output.GetRenderTargetBinding();
 	PSShaderParameters->View = View.ViewUniformBuffer;
 	// Start Eureka
-	PSShaderParameters->EurekaSceneColorTint = FVector4(Settings.EurekaSceneColorTint.R, Settings.EurekaSceneColorTint.G, Settings.EurekaSceneColorTint.B, 0);
+	PSShaderParameters->EurekaSceneColorDesaturate = Settings.EurekaSceneColorDesaturate;
+	PSShaderParameters->EurekaSceneColorTint = Settings.EurekaSceneColorTint;
 	// End Eureka
 	PSShaderParameters->ColorScale0 = FVector4(Settings.SceneColorTint.R, Settings.SceneColorTint.G, Settings.SceneColorTint.B, 0);
 	PSShaderParameters->ColorScale1 = FVector4(Settings.BloomIntensity, Settings.BloomIntensity, Settings.BloomIntensity, 0);

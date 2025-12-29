@@ -362,7 +362,18 @@ FPostProcessSettings::FPostProcessSettings()
 	FMemory::Memzero(this, sizeof(FPostProcessSettings));
 
 	// Start Eureka
+	// Global Settings
+	EurekaPPVPositionWS = FVector(0.0f, 0.0f, 0.0f);
+	// Color Grading
+	EurekaSceneColorDesaturate = 0.0f;
 	EurekaSceneColorTint = FLinearColor(1.0f, 1.0f, 1.0f);
+	// Distance based color grading
+	EurekaUseDistanceBasedColorGrading = false;
+	EurekaColorGradingFalloffDistance = 0.0f;
+	EurekaDistanceBasedColorDesaturateFar = 0.0f;
+	EurekaDistanceBasedColorDesaturateNear = 0.0f;
+	EurekaDistanceBasedColorTintFar = FLinearColor(1.0f, 1.0f, 1.0f);
+	EurekaDistanceBasedColorTintNear = FLinearColor(1.0f, 1.0f, 1.0f);
 	// End Eureka
 	
 	WhiteTemp = 6500.0f;
@@ -606,7 +617,16 @@ FPostProcessSettings::FPostProcessSettings()
 
 FPostProcessSettings::FPostProcessSettings(const FPostProcessSettings& Settings)
 	// Start Eureka
-	: bOverride_EurekaSceneColorTint(Settings.bOverride_EurekaSceneColorTint)
+	// Global Settings
+	: bOverride_EurekaPPVPositionWS(Settings.bOverride_EurekaPPVPositionWS)
+	, bOverride_EurekaSceneColorDesaturate(Settings.bOverride_EurekaSceneColorDesaturate)
+	, bOverride_EurekaSceneColorTint(Settings.bOverride_EurekaSceneColorTint)
+	// Distance based color grading
+	, bOverride_EurekaUseDistanceBasedColorGrading(Settings.bOverride_EurekaUseDistanceBasedColorGrading)
+	, bOverride_EurekaDistanceBasedColorDesaturateFar(Settings.bOverride_EurekaDistanceBasedColorDesaturateFar)
+	, bOverride_EurekaDistanceBasedColorDesaturateNear(Settings.bOverride_EurekaDistanceBasedColorDesaturateNear)
+	, bOverride_EurekaDistanceBasedColorTintFar(Settings.bOverride_EurekaDistanceBasedColorTintFar)
+	, bOverride_EurekaDistanceBasedColorTintNear(Settings.bOverride_EurekaDistanceBasedColorTintNear)
 	// End Eureka
 	, bOverride_WhiteTemp(Settings.bOverride_WhiteTemp)
 	, bOverride_WhiteTint(Settings.bOverride_WhiteTint)
@@ -790,8 +810,17 @@ FPostProcessSettings::FPostProcessSettings(const FPostProcessSettings& Settings)
 	, bOverride_PathTracingSamplesPerPixel(Settings.bOverride_PathTracingSamplesPerPixel)
 
 	// Start Eureka
+	, EurekaPPVPositionWS(Settings.EurekaPPVPositionWS)
+	, EurekaSceneColorDesaturate(Settings.EurekaSceneColorDesaturate)
 	, EurekaSceneColorTint(Settings.EurekaSceneColorTint)
-	// End Eureka
+	// Distance based color grading
+	, EurekaUseDistanceBasedColorGrading(Settings.EurekaUseDistanceBasedColorGrading)
+	, EurekaColorGradingFalloffDistance(Settings.EurekaColorGradingFalloffDistance)
+	, EurekaDistanceBasedColorDesaturateFar(Settings.EurekaDistanceBasedColorDesaturateFar)
+	, EurekaDistanceBasedColorDesaturateNear(Settings.EurekaDistanceBasedColorDesaturateNear)
+	, EurekaDistanceBasedColorTintFar(Settings.EurekaDistanceBasedColorTintFar)
+	, EurekaDistanceBasedColorTintNear(Settings.EurekaDistanceBasedColorTintNear)
+	// End Eureka	
 	, bMobileHQGaussian(Settings.bMobileHQGaussian)
 	, BloomMethod(Settings.BloomMethod)
 	, AutoExposureMethod(Settings.AutoExposureMethod)
