@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class EurekaPlayground : ModuleRules
+public class PrettierMaterial : ModuleRules
 {
-	public EurekaPlayground(ReadOnlyTargetRules Target) : base(Target)
+	public PrettierMaterial(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		

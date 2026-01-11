@@ -1,15 +1,15 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "EurekaPlayground.h"
+#include "PrettierMaterial.h"
 
-#define LOCTEXT_NAMESPACE "FEurekaPlaygroundModule"
+#define LOCTEXT_NAMESPACE "FPrettierMaterialModule"
 
-void FEurekaPlaygroundModule::StartupModule()
+void FPrettierMaterialModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }
 
-void FEurekaPlaygroundModule::ShutdownModule()
+void FPrettierMaterialModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -17,4 +17,4 @@ void FEurekaPlaygroundModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FEurekaPlaygroundModule, EurekaPlayground)
+IMPLEMENT_MODULE(FPrettierMaterialModule, PrettierMaterial)
