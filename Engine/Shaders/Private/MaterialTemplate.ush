@@ -2466,6 +2466,26 @@ void GetMaterialClippingVelocity(FMaterialPixelParameters Parameters, FPixelMate
 void GetMaterialCoverageAndClipping(FMaterialPixelParameters Parameters, FPixelMaterialInputs PixelMaterialInputs)
 {
 	ClipLODTransition(Parameters);
+	// Test Split Screen
+	float CurrentAR = View.ViewSizeAndInvSize.x / View.ViewSizeAndInvSize.y;
+	float TargetAR = 21.0f/9.0f;
+	float UVScale = CurrentAR / TargetAR;
+	float2 ScreenUV = (Parameters.SvPosition.xy - View.ViewRectMin.xy) * View.ViewSizeAndInvSize.zw;
+	ScreenUV.x = (ScreenUV.x - 0.5 ) * UVScale + 0.5;
+	ScreenUV.x *= TargetAR;
+	float2 Pivot = float2(0.5f, 0.5f);
+	Pivot.x *= TargetAR;
+	float2 Offset = ScreenUV - Pivot;
+	float AngleDeg = 52.0f;
+	float Rad = radians(AngleDeg);
+	float2 Dir = float2(cos(Rad), sin(Rad));
+	float Dist = dot(Offset, Dir);
+	float Mask = step(0, Dist);
+
+	float TestVal = GetMaterialEmissive(PixelMaterialInputs).r;
+	TestVal = TestVal < 0.5f ? 1.0f : -1.0f;
+		
+	clip((Mask == 0 ? -1 : 1) * TestVal);
 
 #if MATERIALBLENDING_MASKED
 	#if MATERIAL_DITHER_OPACITY_MASK
