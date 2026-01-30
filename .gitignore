@@ -230,3 +230,5 @@ Saved/
 
 # Ignore the headers and cpp files in the clang toolchain on Linux
 Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/**
+Engine/Source/ThirdParty/Intel/MetricsDiscovery/MetricsDiscoveryHelper/source/metrics_discovery_helper.h
+Engine/Source/Runtime/Windows/D3D11RHI/D3D11RHI.Build.cs
