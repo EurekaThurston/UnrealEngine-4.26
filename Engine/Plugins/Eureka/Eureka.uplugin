@@ -23,7 +23,7 @@
 		{
 			"Name": "EurekaEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PostEngineInit"
 		}
 	]
 }
