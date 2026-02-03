@@ -973,6 +973,11 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	bAllowDevelopmentShaderCompile = true;
 	bIsMaterialEditorStatsMaterial = false;
 
+	// Start Eureka
+	bEnableSplitScreen = false;
+	SplitRefValue = 0;
+	// End
+
 #if WITH_EDITORONLY_DATA
 	MaterialGraph = NULL;
 #endif //WITH_EDITORONLY_DATA
@@ -5789,16 +5794,26 @@ bool UMaterial::CastsRayTracedShadows() const
 	return bCastRayTracedShadows;
 }
 
+bool UMaterial::IsSplitScreen() const
+{
+	return bEnableSplitScreen != 0;
+}
+
+int32 UMaterial::GetSplitRefValue() const
+{
+	return SplitRefValue;
+}
+
 static bool IsPropertyActive_Internal(EMaterialProperty InProperty,
-	EMaterialDomain Domain,
-	EBlendMode BlendMode,
-	FMaterialShadingModelField ShadingModels,
-	ETranslucencyLightingMode TranslucencyLightingMode,
-	EDecalBlendMode DecalBlendMode,
-	bool bBlendableOutputAlpha,
-	bool bHasTessellation,
-	bool bHasRefraction,
-	bool bUsesShadingModelFromMaterialExpression)
+                                      EMaterialDomain Domain,
+                                      EBlendMode BlendMode,
+                                      FMaterialShadingModelField ShadingModels,
+                                      ETranslucencyLightingMode TranslucencyLightingMode,
+                                      EDecalBlendMode DecalBlendMode,
+                                      bool bBlendableOutputAlpha,
+                                      bool bHasTessellation,
+                                      bool bHasRefraction,
+                                      bool bUsesShadingModelFromMaterialExpression)
 {
 	if (Domain == MD_PostProcess)
 	{

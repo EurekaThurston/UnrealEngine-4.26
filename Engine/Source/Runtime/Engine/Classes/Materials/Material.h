@@ -512,6 +512,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = Material, AdvancedDisplay, meta = (ClampMin = 0))
 	int32 NumCustomizedUVs;
 
+	// Start Eureka
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Eureka, meta = (DisplayName = "Split Screen"))
+	uint8 bEnableSplitScreen : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Eureka, meta = (DisplayName = "Split Reference Value"))
+	int32 SplitRefValue;
+	// End
+	
 	/** 
 	 * Useful for artificially increasing the influence of the normal on the lighting result for translucency.
 	 * A value larger than 1 increases the influence of the normal, a value smaller than 1 makes the lighting more ambient.
@@ -1055,6 +1063,11 @@ public:
 	ENGINE_API virtual bool IsPostProcessMaterial() const { return MaterialDomain == MD_PostProcess; }
 	ENGINE_API virtual USubsurfaceProfile* GetSubsurfaceProfile_Internal() const override;
 	ENGINE_API virtual bool CastsRayTracedShadows() const override;
+
+	// Start Eureka
+	ENGINE_API virtual bool IsSplitScreen() const override;
+	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	// End
 
 	ENGINE_API void SetShadingModel(EMaterialShadingModel NewModel) { ensure(ShadingModel < MSM_NUM); ShadingModel = NewModel; ShadingModels = FMaterialShadingModelField(ShadingModel); }
 

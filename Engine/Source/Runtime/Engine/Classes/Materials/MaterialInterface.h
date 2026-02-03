@@ -808,6 +808,10 @@ public:
 	ENGINE_API virtual bool IsTranslucencyWritingVelocity() const;
 	ENGINE_API virtual bool IsMasked() const;
 	ENGINE_API virtual bool IsDeferredDecal() const;
+	// Start Eureka
+	ENGINE_API virtual bool IsSplitScreen() const;
+	ENGINE_API virtual int32 GetSplitRefValue() const;
+	// End
 
 	ENGINE_API virtual USubsurfaceProfile* GetSubsurfaceProfile_Internal() const;
 	ENGINE_API virtual bool CastsRayTracedShadows() const;
