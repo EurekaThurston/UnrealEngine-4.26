@@ -551,6 +551,17 @@ bool UMaterialInterface::IsDeferredDecal() const
 {
 	return false;
 }
+// Start Eureka
+bool UMaterialInterface::IsSplitScreen() const
+{
+	return false;
+}
+
+int32 UMaterialInterface::GetSplitRefValue() const
+{
+	return 0;
+}
+// End
 bool UMaterialInterface::GetCastDynamicShadowAsMasked() const
 {
 	return false;
