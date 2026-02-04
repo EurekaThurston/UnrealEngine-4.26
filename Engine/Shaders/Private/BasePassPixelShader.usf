@@ -1548,7 +1548,8 @@ void FPixelShaderInOut_MainPS(
 		Out.MRT[0].rgb = float3(DesaturateColor(Out.MRT[0], FinalDesaturation) * FinalColorTint);
 	}
 #if USE_SPLIT_SCREEN
-	Out.MRT[0].rgb = float3(1.0f, 0.0f, 0.25f);
+	// Out.MRT[0].rgb =  float3(1.0f, 0.0f, 0.25f);
+	Out.MRT[0].rgb = float3(GetMaterialSplitRefValue()/10.0f,GetMaterialSplitRefValue()/10.0f,GetMaterialSplitRefValue()/10.0f);
 #endif
 	
 	// End Eureka

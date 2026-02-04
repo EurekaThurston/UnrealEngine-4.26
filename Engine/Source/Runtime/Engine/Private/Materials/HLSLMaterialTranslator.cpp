@@ -1655,6 +1655,10 @@ FString FHLSLMaterialTranslator::GetMaterialShaderCode()
 	LazyPrintf.PushParam(*GenerateFunctionCode(MP_CustomData0));
 	LazyPrintf.PushParam(*GenerateFunctionCode(MP_CustomData1));
 
+	// Start Eureka
+	LazyPrintf.PushParam(*FString::Printf(TEXT("return %d"), Material->GetSplitRefValue()));
+	// End
+	
 	// Print custom texture coordinate assignments
 	FString CustomUVAssignments;
 
