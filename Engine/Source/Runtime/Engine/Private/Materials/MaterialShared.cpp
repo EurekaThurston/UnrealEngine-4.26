@@ -1479,6 +1479,18 @@ UMaterialInterface* FMaterialResource::GetMaterialInterface() const
 	return MaterialInstance ? (UMaterialInterface*)MaterialInstance : (UMaterialInterface*)Material;
 }
 
+// Start Eureka
+bool FMaterialResource::IsSplitScreen() const
+{
+	return Material->bEnableSplitScreen;
+}
+
+int32 FMaterialResource::GetSplitRefValue() const
+{
+	return Material->SplitRefValue;
+}
+// End
+
 #if WITH_EDITOR
 void FMaterialResource::NotifyCompilationFinished()
 {
@@ -1649,7 +1661,7 @@ void FMaterial::SetupMaterialEnvironment(
 		OutEnvironment.SetDefine(TEXT("USING_TESSELLATION"),TEXT("1"));
 
 		if (GetTessellationMode() == MTM_FlatTessellation)
-		{
+		{	
 			OutEnvironment.SetDefine(TEXT("TESSELLATION_TYPE_FLAT"),TEXT("1"));
 		}
 		else if (GetTessellationMode() == MTM_PNTriangles)
@@ -1685,12 +1697,14 @@ void FMaterial::SetupMaterialEnvironment(
 	case BLEND_Opaque:
 	case BLEND_Masked:
 		{
+			OutEnvironment.SetDefine(TEXT("USE_SPLIT_SCREEN"), IsSplitScreen());
 			// Only set MATERIALBLENDING_MASKED if the material is truly masked
 			//@todo - this may cause mismatches with what the shader compiles and what the renderer thinks the shader needs
 			// For example IsTranslucentBlendMode doesn't check IsMasked
 			if(!WritesEveryPixel())
 			{
 				OutEnvironment.SetDefine(TEXT("MATERIALBLENDING_MASKED"),TEXT("1"));
+				
 			}
 			else
 			{
@@ -1772,6 +1786,9 @@ void FMaterial::SetupMaterialEnvironment(
 	OutEnvironment.SetDefine(TEXT("MATERIAL_OUTPUT_OPACITY_AS_ALPHA"), GetBlendableOutputAlpha());
 	OutEnvironment.SetDefine(TEXT("TRANSLUCENT_SHADOW_WITH_MASKED_OPACITY"), GetCastDynamicShadowAsMasked());
 	OutEnvironment.SetDefine(TEXT("MATERIAL_USE_ALPHA_TO_COVERAGE"), IsUsingAlphaToCoverage());
+	// Start Eureka
+	OutEnvironment.SetDefine(TEXT("USE_SPLIT_SCREEN"), IsSplitScreen() && (IsTranslucentBlendMode(GetBlendMode()) || IsMasked()));
+	// End
 
 	if (IsUsingFullPrecision())
 	{
