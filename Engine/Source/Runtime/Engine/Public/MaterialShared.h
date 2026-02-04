@@ -1638,6 +1638,10 @@ public:
 	virtual bool HasRuntimeVirtualTextureOutput() const { return false; }
 	virtual bool CastsRayTracedShadows() const { return true; }
 	virtual EMaterialShadingRate GetShadingRate() const { return MSR_1x1; }
+	// Start Eureka
+	virtual bool IsSplitScreen() const { return false; }
+	virtual int32 GetSplitRefValue() const { return 0; }
+	// End
 	/**
 	 * Should shaders compiled for this material be saved to disk?
 	 */
@@ -2477,6 +2481,11 @@ public:
 	ENGINE_API virtual bool HasRuntimeVirtualTextureOutput() const override;
 	ENGINE_API virtual bool CastsRayTracedShadows() const override;
 	ENGINE_API  virtual UMaterialInterface* GetMaterialInterface() const override;
+	// Start Eureka
+	ENGINE_API virtual bool IsSplitScreen() const override;
+	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	// End
+	
 	/**
 	 * Should shaders compiled for this material be saved to disk?
 	 */
@@ -3002,6 +3011,9 @@ struct FMaterialShaderParameters
 	uint32 DecalBlendMode;
 	int32 NumCustomizedUVs;
 	uint32 StencilCompare;
+	// Start Eureka
+	int32 SplitRefValue;
+	// End
 	union
 	{
 		uint64 PackedFlags;
@@ -3054,6 +3066,9 @@ struct FMaterialShaderParameters
 			uint64 bIsUsedWithLidarPointCloud : 1;
 			uint64 bIsUsedWithVirtualHeightfieldMesh : 1;
 			uint64 bIsStencilTestEnabled : 1;
+			// Start Eureka
+			uint64 bIsSplitScreen : 1;
+			// End
 		};
 	};
 
@@ -3112,6 +3127,10 @@ struct FMaterialShaderParameters
 		bIsUsedWithLidarPointCloud = InMaterial->IsUsedWithLidarPointCloud();
 		bIsUsedWithVirtualHeightfieldMesh = InMaterial->IsUsedWithVirtualHeightfieldMesh();
 		bIsStencilTestEnabled = InMaterial->IsStencilTestEnabled();
+		// Start Eureka
+		bIsSplitScreen = InMaterial->IsSplitScreen();
+		SplitRefValue = InMaterial->GetSplitRefValue();
+		// End
 
 		// See FDebugViewModeMaterialProxy::GetFriendlyName()
 		// TODO seems horrible that friendly name controls which shaders get compiled, should refactor this to use regular accessors

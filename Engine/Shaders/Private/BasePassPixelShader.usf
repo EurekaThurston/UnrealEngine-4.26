@@ -1545,8 +1545,12 @@ void FPixelShaderInOut_MainPS(
 		float FinalDesaturation = lerp(View.EurekaDistanceBasedDesaturateNear, View.EurekaDistanceBasedDesaturateFar, Falloff);
 		float3 FinalColorTint = lerp(View.EurekaDistanceBasedTintNear, View.EurekaDistanceBasedTintFar, Falloff);
 		
-		Out.MRT[0] = float4(DesaturateColor(Out.MRT[0], FinalDesaturation) * FinalColorTint, 1.0f);
+		Out.MRT[0].rgb = float3(DesaturateColor(Out.MRT[0], FinalDesaturation) * FinalColorTint);
 	}
+#if USE_SPLIT_SCREEN
+	Out.MRT[0].rgb = float3(1.0f, 0.0f, 0.25f);
+#endif
+	
 	// End Eureka
 }
 
