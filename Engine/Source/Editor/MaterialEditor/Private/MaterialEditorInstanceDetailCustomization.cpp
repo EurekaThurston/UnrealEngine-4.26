@@ -1257,6 +1257,56 @@ void FMaterialInstanceParameterDetails::CreateBasePropertyOverrideWidgets(IDetai
 		.EditCondition(IsOverrideDitheredLODTransitionEnabled, FOnBooleanValueChanged::CreateSP(this, &FMaterialInstanceParameterDetails::OnOverrideDitheredLODTransitionChanged))
 		.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideDitheredLODTransitionEnabled)))
 		.OverrideResetToDefault(ResetDitheredLODTransitionPropertyOverride);
+	
+	// Start Eureka
+	// EnableSplitScreen
+	{
+		TAttribute<bool> IsOverrideEnableSplitScreenEnabled = TAttribute<bool>::Create(TAttribute<bool>::FGetter::CreateSP(this,&FMaterialInstanceParameterDetails::OverrideSplitScreenEnabled));
+		TSharedPtr<IPropertyHandle> EnableSplitScreenProperty = BasePropertyOverridePropery->GetChildHandle("EnableSplitScreen");
+		FIsResetToDefaultVisible IsEnableSplitScreenPropertyResetVisible = FIsResetToDefaultVisible::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+		{
+			return MaterialEditorInstance->Parent != nullptr ? MaterialEditorInstance->BasePropertyOverrides.EnableSplitScreen != MaterialEditorInstance->Parent->IsSplitScreen() : false;
+		});
+		FResetToDefaultHandler ResetEnableSplitScreenPropertyHandler = FResetToDefaultHandler::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+		{
+			if (MaterialEditorInstance->Parent != nullptr)
+			{
+				MaterialEditorInstance->BasePropertyOverrides.EnableSplitScreen = MaterialEditorInstance->Parent->IsSplitScreen();
+			}
+		});
+		FResetToDefaultOverride ResetEnableSplitScreenPropertyOverride = FResetToDefaultOverride::Create(IsEnableSplitScreenPropertyResetVisible, ResetEnableSplitScreenPropertyHandler);
+		IDetailPropertyRow& EnableSplitScreenPropertyRow = BasePropertyOverrideGroup.AddPropertyRow(EnableSplitScreenProperty.ToSharedRef());
+		EnableSplitScreenPropertyRow
+			.DisplayName(EnableSplitScreenProperty->GetPropertyDisplayName())
+			.ToolTip(EnableSplitScreenProperty->GetToolTipText())
+			.EditCondition(IsOverrideEnableSplitScreenEnabled, FOnBooleanValueChanged::CreateSP(this, &FMaterialInstanceParameterDetails::OnOverrideSplitScreenChanged))
+			.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideEnableSplitScreenEnabled)))
+			.OverrideResetToDefault(ResetEnableSplitScreenPropertyOverride);
+	}
+	// SplitRefValue
+	TAttribute<bool> IsOverrideSplitRefValueEnabled = TAttribute<bool>::Create(TAttribute<bool>::FGetter::CreateSP(this,&FMaterialInstanceParameterDetails::OverrideSplitRefValueEnabled));
+	TSharedPtr<IPropertyHandle> SplitRefValueProperty = BasePropertyOverridePropery->GetChildHandle("SplitRefValue");
+	FIsResetToDefaultVisible IsSplitRefValuePropertyResetVisible = FIsResetToDefaultVisible::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+	{
+		return MaterialEditorInstance->Parent != nullptr ? MaterialEditorInstance->BasePropertyOverrides.SplitRefValue != MaterialEditorInstance->Parent->GetSplitRefValue() : false;
+	});
+	FResetToDefaultHandler ResetSplitRefValuePropertyHandler = FResetToDefaultHandler::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+	{
+		if (MaterialEditorInstance->Parent != nullptr)
+		{
+			MaterialEditorInstance->BasePropertyOverrides.SplitRefValue = MaterialEditorInstance->Parent->GetSplitRefValue();
+		}
+	});
+	FResetToDefaultOverride ResetSplitRefValuePropertyOverride = FResetToDefaultOverride::Create(IsSplitRefValuePropertyResetVisible, ResetSplitRefValuePropertyHandler);
+	IDetailPropertyRow& SplitRefValuePropertyRow = BasePropertyOverrideGroup.AddPropertyRow(SplitRefValueProperty.ToSharedRef());
+	SplitRefValuePropertyRow
+		.DisplayName(SplitRefValueProperty->GetPropertyDisplayName())
+		.ToolTip(SplitRefValueProperty->GetToolTipText())
+		.EditCondition(IsOverrideSplitRefValueEnabled, FOnBooleanValueChanged::CreateSP(this, &FMaterialInstanceParameterDetails::OnOverrideSplitRefValueChanged))
+		.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideSplitRefValueEnabled)))
+		.OverrideResetToDefault(ResetSplitRefValuePropertyOverride);
+	
+	// End
 }
 
 EVisibility FMaterialInstanceParameterDetails::IsOverriddenAndVisible(TAttribute<bool> IsOverridden) const
@@ -1294,6 +1344,16 @@ bool FMaterialInstanceParameterDetails::OverrideDitheredLODTransitionEnabled() c
 	return MaterialEditorInstance->BasePropertyOverrides.bOverride_DitheredLODTransition;
 }
 
+bool FMaterialInstanceParameterDetails::OverrideSplitScreenEnabled() const
+{
+	return MaterialEditorInstance->BasePropertyOverrides.bOverride_EnableSplitScreen;
+}
+
+bool FMaterialInstanceParameterDetails::OverrideSplitRefValueEnabled() const
+{
+	return MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitRefValue;
+}
+
 void FMaterialInstanceParameterDetails::OnOverrideOpacityClipMaskValueChanged(bool NewValue)
 {
 	MaterialEditorInstance->BasePropertyOverrides.bOverride_OpacityMaskClipValue = NewValue;
@@ -1325,6 +1385,20 @@ void FMaterialInstanceParameterDetails::OnOverrideTwoSidedChanged(bool NewValue)
 void FMaterialInstanceParameterDetails::OnOverrideDitheredLODTransitionChanged(bool NewValue)
 {
 	MaterialEditorInstance->BasePropertyOverrides.bOverride_DitheredLODTransition = NewValue;
+	MaterialEditorInstance->PostEditChange();
+	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
+}
+
+void FMaterialInstanceParameterDetails::OnOverrideSplitScreenChanged(bool NewValue)
+{
+	MaterialEditorInstance->BasePropertyOverrides.bOverride_EnableSplitScreen = NewValue;
+	MaterialEditorInstance->PostEditChange();
+	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
+}
+
+void FMaterialInstanceParameterDetails::OnOverrideSplitRefValueChanged(bool NewValue)
+{
+	MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitRefValue = NewValue;
 	MaterialEditorInstance->PostEditChange();
 	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
 }

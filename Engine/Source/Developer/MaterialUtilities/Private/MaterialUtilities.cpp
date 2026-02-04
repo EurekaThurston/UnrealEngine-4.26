@@ -92,6 +92,12 @@ UMaterialInterface* FMaterialUtilities::CreateProxyMaterialAndTextures(UPackage*
 	Material->BasePropertyOverrides.bOverride_TwoSided = MaterialData.Material->IsTwoSided();
 	Material->BasePropertyOverrides.DitheredLODTransition = MaterialData.Material->IsDitheredLODTransition();
 	Material->BasePropertyOverrides.bOverride_DitheredLODTransition = MaterialData.Material->IsDitheredLODTransition();
+	// Start Eureka
+	Material->BasePropertyOverrides.EnableSplitScreen = MaterialData.Material->IsSplitScreen();
+	Material->BasePropertyOverrides.bOverride_EnableSplitScreen = MaterialData.Material->IsSplitScreen();
+	Material->BasePropertyOverrides.SplitRefValue = MaterialData.Material->GetSplitRefValue();
+	Material->BasePropertyOverrides.bOverride_SplitRefValue = MaterialData.Material->GetSplitRefValue();
+	// End
 
 	if (MaterialData.Material->GetBlendMode() != BLEND_Opaque)
 	{

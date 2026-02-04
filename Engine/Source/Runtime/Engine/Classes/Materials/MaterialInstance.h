@@ -358,6 +358,11 @@ class UMaterialInstance : public UMaterialInterface
 	uint8 DitheredLODTransition : 1;
 	uint8 bCastDynamicShadowAsMasked : 1;
 	uint8 bIsShadingModelFromMaterialExpression : 1;
+	
+	// Start Eureka
+	uint8 bEnableSplitScreen : 1;
+	int32 SplitRefValue;
+	// End
 
 	TEnumAsByte<EBlendMode> BlendMode;
 
@@ -549,6 +554,11 @@ public:
 	ENGINE_API virtual bool IsTwoSided() const override;
 	ENGINE_API virtual bool IsDitheredLODTransition() const override;
 	ENGINE_API virtual bool IsMasked() const override;
+	
+	// Start Eureka
+	ENGINE_API virtual bool IsSplitScreen() const override;
+	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	// End
 	
 	ENGINE_API virtual USubsurfaceProfile* GetSubsurfaceProfile_Internal() const override;
 	ENGINE_API virtual bool CastsRayTracedShadows() const override;

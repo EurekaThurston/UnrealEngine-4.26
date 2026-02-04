@@ -89,11 +89,19 @@ private:
 	bool OverrideShadingModelEnabled() const;
 	bool OverrideTwoSidedEnabled() const;
 	bool OverrideDitheredLODTransitionEnabled() const;
+	// Start Eureka
+	bool OverrideSplitScreenEnabled() const;
+	bool OverrideSplitRefValueEnabled() const;
+	// End
 	void OnOverrideOpacityClipMaskValueChanged(bool NewValue);
 	void OnOverrideBlendModeChanged(bool NewValue);
 	void OnOverrideShadingModelChanged(bool NewValue);
 	void OnOverrideTwoSidedChanged(bool NewValue);
 	void OnOverrideDitheredLODTransitionChanged(bool NewValue);
+	// Start Eureka
+	void OnOverrideSplitScreenChanged(bool NewValue);
+	void OnOverrideSplitRefValueChanged(bool NewValue);
+	// End
 
 private:
 	/** Object that stores all of the possible parameters we can edit */

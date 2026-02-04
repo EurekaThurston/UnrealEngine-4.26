@@ -1619,6 +1619,16 @@ void UMaterialEditorInstanceConstant::CopyBasePropertiesFromParent()
 	{
 		BasePropertyOverrides.DitheredLODTransition = SourceInstance->IsDitheredLODTransition();
 	}
+	// Start Eureka
+	if (!BasePropertyOverrides.bOverride_EnableSplitScreen)
+	{
+		BasePropertyOverrides.EnableSplitScreen = SourceInstance->IsSplitScreen();
+	}
+	if (!BasePropertyOverrides.bOverride_SplitRefValue)
+	{
+		BasePropertyOverrides.SplitRefValue = SourceInstance->GetSplitRefValue();
+	}
+	// End
 
 	// Copy the Lightmass settings...
 	// The lightmass functions (GetCastShadowAsMasked, etc.) check if the value is overridden and returns the current value if so, otherwise returns the parent value

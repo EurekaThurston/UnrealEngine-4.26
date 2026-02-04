@@ -1773,6 +1773,17 @@ bool UMaterialInstanceDynamic::IsMasked() const
 {
 	return Parent ? Parent->IsMasked() : false;
 }
+// Start Eureka
+bool UMaterialInstanceDynamic::IsSplitScreen() const
+{
+	return Parent ? Parent->IsSplitScreen() : false;
+}
+
+int32 UMaterialInstanceDynamic::GetSplitRefValue() const
+{
+	return Parent ? Parent->GetSplitRefValue() : 0;
+}
+// End
 
 FMaterialShadingModelField UMaterialInstanceDynamic::GetShadingModels() const
 {
@@ -2664,6 +2675,10 @@ void UMaterialInstance::UpdateOverridableBaseProperties()
 		TwoSided = 0;
 		DitheredLODTransition = 0;
 		bIsShadingModelFromMaterialExpression = 0;
+		// Start Eureka
+		bEnableSplitScreen = 0;
+		SplitRefValue = 0;
+		// End
 		return;
 	}
 
@@ -2747,6 +2762,28 @@ void UMaterialInstance::UpdateOverridableBaseProperties()
 		DitheredLODTransition = Parent->IsDitheredLODTransition();
 		BasePropertyOverrides.DitheredLODTransition = DitheredLODTransition;
 	}
+	
+	// Start Eureka
+	if (BasePropertyOverrides.bOverride_EnableSplitScreen)
+	{
+		bEnableSplitScreen = BasePropertyOverrides.EnableSplitScreen != 0;
+	}
+	else
+	{
+		bEnableSplitScreen = Parent->IsSplitScreen();
+		BasePropertyOverrides.EnableSplitScreen = bEnableSplitScreen;
+	}
+	
+	if (BasePropertyOverrides.bOverride_SplitRefValue)
+	{
+		SplitRefValue = BasePropertyOverrides.SplitRefValue;
+	}
+	else
+	{
+		SplitRefValue = Parent->GetSplitRefValue();
+		BasePropertyOverrides.SplitRefValue = SplitRefValue;
+	}
+	// End
 }
 
 void UMaterialInstance::GetAllShaderMaps(TArray<FMaterialShaderMap*>& OutShaderMaps)
@@ -4458,6 +4495,26 @@ void UMaterialInstance::GetBasePropertyOverridesHash(FSHAHash& OutHash)const
 		Hash.Update((uint8*)&bUsedIsDitheredLODTransition, sizeof(bUsedIsDitheredLODTransition));
 		bHasOverrides = true;
 	}
+	
+	// Start Eureka
+	bool bUsedIsSplitScreen = IsSplitScreen();
+	if ( bUsedIsSplitScreen != Mat->IsSplitScreen())
+	{
+		const FString HashString = TEXT("bOverride_IsSplitScreen");
+		Hash.UpdateWithString(*HashString, HashString.Len());
+		Hash.Update((const uint8*)&bUsedIsSplitScreen, sizeof(bUsedIsSplitScreen));
+		bHasOverrides = true;
+	}
+	
+	int32 UsedSplitRefValue = GetSplitRefValue();
+	if (UsedSplitRefValue != Mat->GetSplitRefValue())
+	{
+		const FString HashString = TEXT("bOverride_SplitRefValue");
+		Hash.UpdateWithString(*HashString, HashString.Len());
+		Hash.Update((const uint8*)&UsedSplitRefValue, sizeof(UsedSplitRefValue));
+		bHasOverrides = true;
+	}
+	// End
 
 	if (bHasOverrides)
 	{
@@ -4475,7 +4532,11 @@ bool UMaterialInstance::HasOverridenBaseProperties()const
 		(GetShadingModels() != Parent->GetShadingModels()) ||
 		(IsTwoSided() != Parent->IsTwoSided()) ||
 		(IsDitheredLODTransition() != Parent->IsDitheredLODTransition()) ||
-		(GetCastDynamicShadowAsMasked() != Parent->GetCastDynamicShadowAsMasked())
+		(GetCastDynamicShadowAsMasked() != Parent->GetCastDynamicShadowAsMasked()) || 
+		// Start Eureka
+		(IsSplitScreen() != Parent->IsSplitScreen()) || 
+		(GetSplitRefValue() != Parent->GetSplitRefValue())
+		// End
 		))
 	{
 		return true;
@@ -4518,6 +4579,18 @@ bool UMaterialInstance::IsMasked() const
 {
 	return GetBlendMode() == EBlendMode::BLEND_Masked;
 }
+
+// Start Eureka
+bool UMaterialInstance::IsSplitScreen() const
+{
+	return bEnableSplitScreen;
+}
+
+int32 UMaterialInstance::GetSplitRefValue() const
+{
+	return SplitRefValue;
+}
+// End
 
 USubsurfaceProfile* UMaterialInstance::GetSubsurfaceProfile_Internal() const
 {
