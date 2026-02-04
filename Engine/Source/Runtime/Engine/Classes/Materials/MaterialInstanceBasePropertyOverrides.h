@@ -60,6 +60,20 @@ struct ENGINE_API FMaterialInstanceBasePropertyOverrides
 	/** If BlendMode is BLEND_Masked, the surface is not rendered where OpacityMask < OpacityMaskClipValue. */
 	UPROPERTY(EditAnywhere, Category = Material, meta = (editcondition = "bOverride_OpacityMaskClipValue", NoSpinbox = true))
 	float OpacityMaskClipValue;
+	
+	// Start Eureka
+	UPROPERTY(EditAnywhere, Category = Material)
+	uint8 bOverride_EnableSplitScreen : 1;
+	
+	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_EnableSplitScreen"))
+	uint8 EnableSplitScreen : 1;
+	
+	UPROPERTY(EditAnywhere, Category = Material)
+	uint8 bOverride_SplitRefValue : 1;
+	
+	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_SplitRefValue"))
+	int32 SplitRefValue;
+	// End
 
 	FMaterialInstanceBasePropertyOverrides();
 

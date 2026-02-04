@@ -159,6 +159,10 @@ class ENGINE_API UMaterialInstanceDynamic : public UMaterialInstance
 	virtual bool IsTwoSided() const override;
 	virtual bool IsDitheredLODTransition() const override;
 	virtual bool IsMasked() const override;
+	// Start Eureka
+	virtual bool IsSplitScreen() const override;
+	virtual int32 GetSplitRefValue() const override;
+	// End
 
 	/**
 	 * In order to remap to the correct texture streaming data, we must keep track of each texture renamed.
