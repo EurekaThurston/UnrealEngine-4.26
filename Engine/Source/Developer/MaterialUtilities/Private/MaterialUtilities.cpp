@@ -95,8 +95,8 @@ UMaterialInterface* FMaterialUtilities::CreateProxyMaterialAndTextures(UPackage*
 	// Start Eureka
 	Material->BasePropertyOverrides.EnableSplitScreen = MaterialData.Material->IsSplitScreen();
 	Material->BasePropertyOverrides.bOverride_EnableSplitScreen = MaterialData.Material->IsSplitScreen();
-	Material->BasePropertyOverrides.SplitRefValue = MaterialData.Material->GetSplitRefValue();
-	Material->BasePropertyOverrides.bOverride_SplitRefValue = MaterialData.Material->GetSplitRefValue();
+	Material->BasePropertyOverrides.SplitParamIndex = MaterialData.Material->GetSplitParamIndex();
+	Material->BasePropertyOverrides.bOverride_SplitParamIndex = MaterialData.Material->GetSplitParamIndex();
 	// End
 
 	if (MaterialData.Material->GetBlendMode() != BLEND_Opaque)

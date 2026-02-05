@@ -91,7 +91,7 @@ private:
 	bool OverrideDitheredLODTransitionEnabled() const;
 	// Start Eureka
 	bool OverrideSplitScreenEnabled() const;
-	bool OverrideSplitRefValueEnabled() const;
+	bool OverrideSplitParamIndexEnabled() const;
 	// End
 	void OnOverrideOpacityClipMaskValueChanged(bool NewValue);
 	void OnOverrideBlendModeChanged(bool NewValue);
@@ -100,7 +100,7 @@ private:
 	void OnOverrideDitheredLODTransitionChanged(bool NewValue);
 	// Start Eureka
 	void OnOverrideSplitScreenChanged(bool NewValue);
-	void OnOverrideSplitRefValueChanged(bool NewValue);
+	void OnOverrideSplitParamIndexChanged(bool NewValue);
 	// End
 
 private:

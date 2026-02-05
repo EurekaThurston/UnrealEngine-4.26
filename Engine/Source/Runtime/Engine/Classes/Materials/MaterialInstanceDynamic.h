@@ -161,7 +161,7 @@ class ENGINE_API UMaterialInstanceDynamic : public UMaterialInstance
 	virtual bool IsMasked() const override;
 	// Start Eureka
 	virtual bool IsSplitScreen() const override;
-	virtual int32 GetSplitRefValue() const override;
+	virtual int32 GetSplitParamIndex() const override;
 	// End
 
 	/**

@@ -374,6 +374,11 @@ FPostProcessSettings::FPostProcessSettings()
 	EurekaDistanceBasedColorDesaturateNear = 0.0f;
 	EurekaDistanceBasedColorTintFar = FLinearColor(1.0f, 1.0f, 1.0f);
 	EurekaDistanceBasedColorTintNear = FLinearColor(1.0f, 1.0f, 1.0f);
+	// Split Screen
+	EurekaSplitParam1 = FLinearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	EurekaSplitParam2 = FLinearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	EurekaSplitParam3 = FLinearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	EurekaSplitParam4 = FLinearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	// End Eureka
 	
 	WhiteTemp = 6500.0f;
@@ -627,6 +632,11 @@ FPostProcessSettings::FPostProcessSettings(const FPostProcessSettings& Settings)
 	, bOverride_EurekaDistanceBasedColorDesaturateNear(Settings.bOverride_EurekaDistanceBasedColorDesaturateNear)
 	, bOverride_EurekaDistanceBasedColorTintFar(Settings.bOverride_EurekaDistanceBasedColorTintFar)
 	, bOverride_EurekaDistanceBasedColorTintNear(Settings.bOverride_EurekaDistanceBasedColorTintNear)
+	// Split Screen
+	, bOverride_EurekaSplitParam1(Settings.bOverride_EurekaSplitParam1)
+	, bOverride_EurekaSplitParam2(Settings.bOverride_EurekaSplitParam2)
+	, bOverride_EurekaSplitParam3(Settings.bOverride_EurekaSplitParam3)
+	, bOverride_EurekaSplitParam4(Settings.bOverride_EurekaSplitParam4)
 	// End Eureka
 	, bOverride_WhiteTemp(Settings.bOverride_WhiteTemp)
 	, bOverride_WhiteTint(Settings.bOverride_WhiteTint)
@@ -820,6 +830,11 @@ FPostProcessSettings::FPostProcessSettings(const FPostProcessSettings& Settings)
 	, EurekaDistanceBasedColorDesaturateNear(Settings.EurekaDistanceBasedColorDesaturateNear)
 	, EurekaDistanceBasedColorTintFar(Settings.EurekaDistanceBasedColorTintFar)
 	, EurekaDistanceBasedColorTintNear(Settings.EurekaDistanceBasedColorTintNear)
+	// Split Screen
+	, EurekaSplitParam1(Settings.EurekaSplitParam1)
+	, EurekaSplitParam2(Settings.EurekaSplitParam2)
+	, EurekaSplitParam3(Settings.EurekaSplitParam3)
+	, EurekaSplitParam4(Settings.EurekaSplitParam4)
 	// End Eureka	
 	, bMobileHQGaussian(Settings.bMobileHQGaussian)
 	, BloomMethod(Settings.BloomMethod)

@@ -1640,7 +1640,7 @@ public:
 	virtual EMaterialShadingRate GetShadingRate() const { return MSR_1x1; }
 	// Start Eureka
 	virtual bool IsSplitScreen() const { return false; }
-	virtual int32 GetSplitRefValue() const { return 0; }
+	virtual int32 GetSplitParamIndex() const { return 0; }
 	// End
 	/**
 	 * Should shaders compiled for this material be saved to disk?
@@ -2483,7 +2483,7 @@ public:
 	ENGINE_API  virtual UMaterialInterface* GetMaterialInterface() const override;
 	// Start Eureka
 	ENGINE_API virtual bool IsSplitScreen() const override;
-	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	ENGINE_API virtual int32 GetSplitParamIndex() const override;
 	// End
 	
 	/**
@@ -3012,7 +3012,7 @@ struct FMaterialShaderParameters
 	int32 NumCustomizedUVs;
 	uint32 StencilCompare;
 	// Start Eureka
-	int32 SplitRefValue;
+	int32 SplitParamIndex;
 	// End
 	union
 	{
@@ -3129,7 +3129,7 @@ struct FMaterialShaderParameters
 		bIsStencilTestEnabled = InMaterial->IsStencilTestEnabled();
 		// Start Eureka
 		bIsSplitScreen = InMaterial->IsSplitScreen();
-		SplitRefValue = InMaterial->GetSplitRefValue();
+		SplitParamIndex = InMaterial->GetSplitParamIndex();
 		// End
 
 		// See FDebugViewModeMaterialProxy::GetFriendlyName()

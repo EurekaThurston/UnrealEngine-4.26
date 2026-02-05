@@ -975,7 +975,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 	// Start Eureka
 	bEnableSplitScreen = false;
-	SplitRefValue = 0;
+	SplitParamIndex = 0;
 	// End
 
 #if WITH_EDITORONLY_DATA
@@ -5799,9 +5799,9 @@ bool UMaterial::IsSplitScreen() const
 	return bEnableSplitScreen != 0;
 }
 
-int32 UMaterial::GetSplitRefValue() const
+int32 UMaterial::GetSplitParamIndex() const
 {
-	return SplitRefValue;
+	return SplitParamIndex;
 }
 
 static bool IsPropertyActive_Internal(EMaterialProperty InProperty,

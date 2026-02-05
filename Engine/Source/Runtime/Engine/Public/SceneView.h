@@ -767,6 +767,10 @@ enum ETranslucencyVolumeCascade
 	VIEW_UNIFORM_BUFFER_MEMBER(float, EurekaDistanceBasedDesaturateNear) \
 	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaDistanceBasedTintFar) \
 	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaDistanceBasedTintNear) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaSplitParam1) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaSplitParam2) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaSplitParam3) \
+	VIEW_UNIFORM_BUFFER_MEMBER(FLinearColor, EurekaSplitParam4) \
 
 #define VIEW_UNIFORM_BUFFER_MEMBER(type, identifier) \
 	SHADER_PARAMETER(type, identifier)
@@ -785,7 +789,6 @@ BEGIN_GLOBAL_SHADER_PARAMETER_STRUCT_WITH_CONSTRUCTOR(FViewUniformShaderParamete
 	// Same as Wrap_WorldGroupSettings and Clamp_WorldGroupSettings, but with mipbias=MaterialTextureMipBias.
 	SHADER_PARAMETER_SAMPLER(SamplerState, MaterialTextureBilinearWrapedSampler)
 	SHADER_PARAMETER_SAMPLER(SamplerState, MaterialTextureBilinearClampedSampler)
-
 	SHADER_PARAMETER_TEXTURE(Texture3D<uint4>, VolumetricLightmapIndirectionTexture) // FPrecomputedVolumetricLightmapLightingPolicy
 	SHADER_PARAMETER_TEXTURE(Texture3D, VolumetricLightmapBrickAmbientVector) // FPrecomputedVolumetricLightmapLightingPolicy
 	SHADER_PARAMETER_TEXTURE(Texture3D, VolumetricLightmapBrickSHCoefficients0) // FPrecomputedVolumetricLightmapLightingPolicy

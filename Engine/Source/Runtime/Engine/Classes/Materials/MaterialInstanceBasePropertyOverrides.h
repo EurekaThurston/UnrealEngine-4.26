@@ -69,10 +69,10 @@ struct ENGINE_API FMaterialInstanceBasePropertyOverrides
 	uint8 EnableSplitScreen : 1;
 	
 	UPROPERTY(EditAnywhere, Category = Material)
-	uint8 bOverride_SplitRefValue : 1;
+	uint8 bOverride_SplitParamIndex : 1;
 	
-	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_SplitRefValue"))
-	int32 SplitRefValue;
+	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_SplitParamIndex"))
+	int32 SplitParamIndex;
 	// End
 
 	FMaterialInstanceBasePropertyOverrides();
