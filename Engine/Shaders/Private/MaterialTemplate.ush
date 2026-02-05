@@ -2240,6 +2240,14 @@ half GetMaterialCustomData1(FMaterialPixelParameters Parameters)
 %s;
 }
 
+// Start Eureka
+int GetMaterialSplitRefValue()
+{
+%s;
+}
+// End
+
+
 half GetMaterialAmbientOcclusionRaw(FPixelMaterialInputs PixelMaterialInputs)
 {
 	return PixelMaterialInputs.AmbientOcclusion;
