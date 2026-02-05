@@ -1283,28 +1283,28 @@ void FMaterialInstanceParameterDetails::CreateBasePropertyOverrideWidgets(IDetai
 			.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideEnableSplitScreenEnabled)))
 			.OverrideResetToDefault(ResetEnableSplitScreenPropertyOverride);
 	}
-	// SplitRefValue
-	TAttribute<bool> IsOverrideSplitRefValueEnabled = TAttribute<bool>::Create(TAttribute<bool>::FGetter::CreateSP(this,&FMaterialInstanceParameterDetails::OverrideSplitRefValueEnabled));
-	TSharedPtr<IPropertyHandle> SplitRefValueProperty = BasePropertyOverridePropery->GetChildHandle("SplitRefValue");
-	FIsResetToDefaultVisible IsSplitRefValuePropertyResetVisible = FIsResetToDefaultVisible::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+	// SplitParamIndex
+	TAttribute<bool> IsOverrideSplitParamIndexEnabled = TAttribute<bool>::Create(TAttribute<bool>::FGetter::CreateSP(this,&FMaterialInstanceParameterDetails::OverrideSplitParamIndexEnabled));
+	TSharedPtr<IPropertyHandle> SplitParamIndexProperty = BasePropertyOverridePropery->GetChildHandle("SplitParamIndex");
+	FIsResetToDefaultVisible IsSplitParamIndexPropertyResetVisible = FIsResetToDefaultVisible::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
 	{
-		return MaterialEditorInstance->Parent != nullptr ? MaterialEditorInstance->BasePropertyOverrides.SplitRefValue != MaterialEditorInstance->Parent->GetSplitRefValue() : false;
+		return MaterialEditorInstance->Parent != nullptr ? MaterialEditorInstance->BasePropertyOverrides.SplitParamIndex != MaterialEditorInstance->Parent->GetSplitParamIndex() : false;
 	});
-	FResetToDefaultHandler ResetSplitRefValuePropertyHandler = FResetToDefaultHandler::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
+	FResetToDefaultHandler ResetSplitParamIndexPropertyHandler = FResetToDefaultHandler::CreateLambda([this](TSharedPtr<IPropertyHandle> InHandle)
 	{
 		if (MaterialEditorInstance->Parent != nullptr)
 		{
-			MaterialEditorInstance->BasePropertyOverrides.SplitRefValue = MaterialEditorInstance->Parent->GetSplitRefValue();
+			MaterialEditorInstance->BasePropertyOverrides.SplitParamIndex = MaterialEditorInstance->Parent->GetSplitParamIndex();
 		}
 	});
-	FResetToDefaultOverride ResetSplitRefValuePropertyOverride = FResetToDefaultOverride::Create(IsSplitRefValuePropertyResetVisible, ResetSplitRefValuePropertyHandler);
-	IDetailPropertyRow& SplitRefValuePropertyRow = BasePropertyOverrideGroup.AddPropertyRow(SplitRefValueProperty.ToSharedRef());
-	SplitRefValuePropertyRow
-		.DisplayName(SplitRefValueProperty->GetPropertyDisplayName())
-		.ToolTip(SplitRefValueProperty->GetToolTipText())
-		.EditCondition(IsOverrideSplitRefValueEnabled, FOnBooleanValueChanged::CreateSP(this, &FMaterialInstanceParameterDetails::OnOverrideSplitRefValueChanged))
-		.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideSplitRefValueEnabled)))
-		.OverrideResetToDefault(ResetSplitRefValuePropertyOverride);
+	FResetToDefaultOverride ResetSplitParamIndexPropertyOverride = FResetToDefaultOverride::Create(IsSplitParamIndexPropertyResetVisible, ResetSplitParamIndexPropertyHandler);
+	IDetailPropertyRow& SplitParamIndexPropertyRow = BasePropertyOverrideGroup.AddPropertyRow(SplitParamIndexProperty.ToSharedRef());
+	SplitParamIndexPropertyRow
+		.DisplayName(SplitParamIndexProperty->GetPropertyDisplayName())
+		.ToolTip(SplitParamIndexProperty->GetToolTipText())
+		.EditCondition(IsOverrideSplitParamIndexEnabled, FOnBooleanValueChanged::CreateSP(this, &FMaterialInstanceParameterDetails::OnOverrideSplitParamIndexChanged))
+		.Visibility(TAttribute<EVisibility>::Create(TAttribute<EVisibility>::FGetter::CreateSP(this, &FMaterialInstanceParameterDetails::IsOverriddenAndVisible, IsOverrideSplitParamIndexEnabled)))
+		.OverrideResetToDefault(ResetSplitParamIndexPropertyOverride);
 	
 	// End
 }
@@ -1344,15 +1344,17 @@ bool FMaterialInstanceParameterDetails::OverrideDitheredLODTransitionEnabled() c
 	return MaterialEditorInstance->BasePropertyOverrides.bOverride_DitheredLODTransition;
 }
 
+// Start Eureka
 bool FMaterialInstanceParameterDetails::OverrideSplitScreenEnabled() const
 {
 	return MaterialEditorInstance->BasePropertyOverrides.bOverride_EnableSplitScreen;
 }
 
-bool FMaterialInstanceParameterDetails::OverrideSplitRefValueEnabled() const
+bool FMaterialInstanceParameterDetails::OverrideSplitParamIndexEnabled() const
 {
-	return MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitRefValue;
+	return MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitParamIndex;
 }
+// End
 
 void FMaterialInstanceParameterDetails::OnOverrideOpacityClipMaskValueChanged(bool NewValue)
 {
@@ -1389,6 +1391,7 @@ void FMaterialInstanceParameterDetails::OnOverrideDitheredLODTransitionChanged(b
 	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
 }
 
+// Start Eureka
 void FMaterialInstanceParameterDetails::OnOverrideSplitScreenChanged(bool NewValue)
 {
 	MaterialEditorInstance->BasePropertyOverrides.bOverride_EnableSplitScreen = NewValue;
@@ -1396,12 +1399,13 @@ void FMaterialInstanceParameterDetails::OnOverrideSplitScreenChanged(bool NewVal
 	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
 }
 
-void FMaterialInstanceParameterDetails::OnOverrideSplitRefValueChanged(bool NewValue)
+void FMaterialInstanceParameterDetails::OnOverrideSplitParamIndexChanged(bool NewValue)
 {
-	MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitRefValue = NewValue;
+	MaterialEditorInstance->BasePropertyOverrides.bOverride_SplitParamIndex = NewValue;
 	MaterialEditorInstance->PostEditChange();
 	FEditorSupportDelegates::RedrawAllViewports.Broadcast();
 }
+// End
 
 #undef LOCTEXT_NAMESPACE
 

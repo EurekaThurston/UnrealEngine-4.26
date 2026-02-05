@@ -361,7 +361,7 @@ class UMaterialInstance : public UMaterialInterface
 	
 	// Start Eureka
 	uint8 bEnableSplitScreen : 1;
-	int32 SplitRefValue;
+	int32 SplitParamIndex;
 	// End
 
 	TEnumAsByte<EBlendMode> BlendMode;
@@ -557,7 +557,7 @@ public:
 	
 	// Start Eureka
 	ENGINE_API virtual bool IsSplitScreen() const override;
-	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	ENGINE_API virtual int32 GetSplitParamIndex() const override;
 	// End
 	
 	ENGINE_API virtual USubsurfaceProfile* GetSubsurfaceProfile_Internal() const override;

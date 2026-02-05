@@ -810,7 +810,7 @@ public:
 	ENGINE_API virtual bool IsDeferredDecal() const;
 	// Start Eureka
 	ENGINE_API virtual bool IsSplitScreen() const;
-	ENGINE_API virtual int32 GetSplitRefValue() const;
+	ENGINE_API virtual int32 GetSplitParamIndex() const;
 	// End
 
 	ENGINE_API virtual USubsurfaceProfile* GetSubsurfaceProfile_Internal() const;

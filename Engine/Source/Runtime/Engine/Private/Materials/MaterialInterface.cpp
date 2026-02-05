@@ -557,7 +557,7 @@ bool UMaterialInterface::IsSplitScreen() const
 	return false;
 }
 
-int32 UMaterialInterface::GetSplitRefValue() const
+int32 UMaterialInterface::GetSplitParamIndex() const
 {
 	return 0;
 }
