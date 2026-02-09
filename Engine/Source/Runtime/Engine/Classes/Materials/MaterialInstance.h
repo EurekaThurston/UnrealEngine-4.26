@@ -360,7 +360,7 @@ class UMaterialInstance : public UMaterialInterface
 	uint8 bIsShadingModelFromMaterialExpression : 1;
 	
 	// Start Eureka
-	uint8 bEnableSplitScreen : 1;
+	uint8 EnableSplitScreen : 1;
 	int32 SplitParamIndex;
 	// End
 

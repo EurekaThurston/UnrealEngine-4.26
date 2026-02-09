@@ -514,7 +514,7 @@ public:
 
 	// Start Eureka
 	UPROPERTY(EditAnywhere, Category = Eureka, meta = (DisplayName = "Split Screen"))
-	uint8 bEnableSplitScreen : 1;
+	uint8 EnableSplitScreen : 1;
 
 	/** xy: Pivot Position; z:Rotation Degree; w: Invert */
 	UPROPERTY(EditAnywhere, Category = Eureka, meta = (DisplayName = "Split Parameter Index"))
