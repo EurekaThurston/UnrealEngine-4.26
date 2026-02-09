@@ -1485,9 +1485,9 @@ bool FMaterialResource::IsSplitScreen() const
 	return MaterialInstance ? MaterialInstance->IsSplitScreen() : Material->IsSplitScreen();
 }
 
-int32 FMaterialResource::GetSplitRefValue() const
+int32 FMaterialResource::GetSplitParamIndex() const
 {
-	return MaterialInstance ? MaterialInstance->GetSplitRefValue() : Material->GetSplitRefValue();
+	return MaterialInstance ? MaterialInstance->GetSplitParamIndex() : Material->GetSplitParamIndex();
 }
 // End
 
@@ -1697,7 +1697,6 @@ void FMaterial::SetupMaterialEnvironment(
 	case BLEND_Opaque:
 	case BLEND_Masked:
 		{
-			OutEnvironment.SetDefine(TEXT("USE_SPLIT_SCREEN"), IsSplitScreen());
 			// Only set MATERIALBLENDING_MASKED if the material is truly masked
 			//@todo - this may cause mismatches with what the shader compiles and what the renderer thinks the shader needs
 			// For example IsTranslucentBlendMode doesn't check IsMasked
@@ -3566,9 +3565,9 @@ FMaterialInstanceBasePropertyOverrides::FMaterialInstanceBasePropertyOverrides()
 	,OpacityMaskClipValue(.333333f)
 	 // Start Eureka
 	,bOverride_EnableSplitScreen(false)
-	,EnableSplitScreen(false)
-	,bOverride_SplitRefValue(false)
-	,SplitRefValue(0)
+	,EnableSplitScreen(0)
+	,bOverride_SplitParamIndex(false)
+	,SplitParamIndex(0)
 	 // End
 
 {
@@ -3589,7 +3588,9 @@ bool FMaterialInstanceBasePropertyOverrides::operator==(const FMaterialInstanceB
 			DitheredLODTransition == Other.DitheredLODTransition &&
 			// Start Eureka
 			bOverride_EnableSplitScreen == Other.bOverride_EnableSplitScreen &&
-			SplitRefValue == Other.SplitRefValue;
+			bOverride_SplitParamIndex == Other.bOverride_SplitParamIndex &&
+			EnableSplitScreen == Other.EnableSplitScreen &&
+			SplitParamIndex == Other.SplitParamIndex;
 			// End
 }
 

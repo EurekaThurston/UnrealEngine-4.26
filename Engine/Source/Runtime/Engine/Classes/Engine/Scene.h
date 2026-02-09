@@ -701,6 +701,15 @@ struct FPostProcessSettings
 	uint8 bOverride_EurekaDistanceBasedColorTintFar:1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
 	uint8 bOverride_EurekaDistanceBasedColorTintNear:1;
+	// Split Screen
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaSplitParam1:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaSplitParam2:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaSplitParam3:1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
+	uint8 bOverride_EurekaSplitParam4:1;
 	// End Eureka
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Overrides, meta=(PinHiddenByDefault, InlineEditConditionToggle))
@@ -1250,6 +1259,15 @@ struct FPostProcessSettings
 	FLinearColor EurekaDistanceBasedColorTintFar;
 	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Color Grading", meta = (EditCondition = "bOverride_EurekaDistanceBasedColorTintNear", DisplayName = "Tint Near"))
 	FLinearColor EurekaDistanceBasedColorTintNear;
+	// Split Screen
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Split Screen", meta = (EditCondition = "bOverride_EurekaSplitParam1", DisplayName = "Split Parameter 1"))
+	FLinearColor EurekaSplitParam1;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Split Screen", meta = (EditCondition = "bOverride_EurekaSplitParam2", DisplayName = "Split Parameter 2"))
+	FLinearColor EurekaSplitParam2;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Split Screen", meta = (EditCondition = "bOverride_EurekaSplitParam3", DisplayName = "Split Parameter 3"))
+	FLinearColor EurekaSplitParam3;
+	UPROPERTY(interp, EditAnywhere, BlueprintReadWrite, Category = "Eureka|Split Screen", meta = (EditCondition = "bOverride_EurekaSplitParam4", DisplayName = "Split Parameter 4"))
+	FLinearColor EurekaSplitParam4;
 	// End Eureka
 
 	/** Enable HQ Gaussian on high end mobile platforms. (ES3_1) */

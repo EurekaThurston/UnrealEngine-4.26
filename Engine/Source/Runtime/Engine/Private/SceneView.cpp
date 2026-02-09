@@ -1322,6 +1322,11 @@ void FSceneView::OverridePostProcessSettings(const FPostProcessSettings& Src, fl
 		LERP_PP(EurekaDistanceBasedColorDesaturateNear);
 		LERP_PP(EurekaDistanceBasedColorTintFar);
 		LERP_PP(EurekaDistanceBasedColorTintNear);
+		// Split Screen
+		OVERRIDE_PP(EurekaSplitParam1);
+		OVERRIDE_PP(EurekaSplitParam2);
+		OVERRIDE_PP(EurekaSplitParam3);
+		OVERRIDE_PP(EurekaSplitParam4);
 		// End Eureka
 		
 		LERP_PP(WhiteTemp);
@@ -2378,7 +2383,11 @@ void FSceneView::SetupCommonViewUniformBufferParameters(
 	ViewUniformShaderParameters.EurekaDistanceBasedDesaturateNear = FinalPostProcessSettings.EurekaDistanceBasedColorDesaturateNear;
 	ViewUniformShaderParameters.EurekaDistanceBasedTintFar = FinalPostProcessSettings.EurekaDistanceBasedColorTintFar;
 	ViewUniformShaderParameters.EurekaDistanceBasedTintNear = FinalPostProcessSettings.EurekaDistanceBasedColorTintNear;
-	//End Eureka
+	ViewUniformShaderParameters.EurekaSplitParam1 = FinalPostProcessSettings.EurekaSplitParam1;
+	ViewUniformShaderParameters.EurekaSplitParam2 = FinalPostProcessSettings.EurekaSplitParam2;
+	ViewUniformShaderParameters.EurekaSplitParam3 = FinalPostProcessSettings.EurekaSplitParam3;
+	ViewUniformShaderParameters.EurekaSplitParam4 = FinalPostProcessSettings.EurekaSplitParam4;
+	// End
 	
 	ViewUniformShaderParameters.NumSceneColorMSAASamples = NumMSAASamples;
 	ViewUniformShaderParameters.ViewToTranslatedWorld = InViewMatrices.GetOverriddenInvTranslatedViewMatrix();

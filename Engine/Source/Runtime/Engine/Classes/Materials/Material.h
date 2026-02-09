@@ -513,11 +513,12 @@ public:
 	int32 NumCustomizedUVs;
 
 	// Start Eureka
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Eureka, meta = (DisplayName = "Split Screen"))
-	uint8 bEnableSplitScreen : 1;
+	UPROPERTY(EditAnywhere, Category = Eureka, meta = (DisplayName = "Split Screen"))
+	uint8 EnableSplitScreen : 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Eureka, meta = (DisplayName = "Split Reference Value"))
-	int32 SplitRefValue;
+	/** xy: Pivot Position; z:Rotation Degree; w: Invert */
+	UPROPERTY(EditAnywhere, Category = Eureka, meta = (DisplayName = "Split Parameter Index"))
+	int32 SplitParamIndex;
 	// End
 	
 	/** 
@@ -1066,7 +1067,7 @@ public:
 
 	// Start Eureka
 	ENGINE_API virtual bool IsSplitScreen() const override;
-	ENGINE_API virtual int32 GetSplitRefValue() const override;
+	ENGINE_API virtual int32 GetSplitParamIndex() const override;
 	// End
 
 	ENGINE_API void SetShadingModel(EMaterialShadingModel NewModel) { ensure(ShadingModel < MSM_NUM); ShadingModel = NewModel; ShadingModels = FMaterialShadingModelField(ShadingModel); }

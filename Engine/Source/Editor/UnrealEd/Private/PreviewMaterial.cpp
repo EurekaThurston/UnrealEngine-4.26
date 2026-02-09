@@ -1624,9 +1624,9 @@ void UMaterialEditorInstanceConstant::CopyBasePropertiesFromParent()
 	{
 		BasePropertyOverrides.EnableSplitScreen = SourceInstance->IsSplitScreen();
 	}
-	if (!BasePropertyOverrides.bOverride_SplitRefValue)
+	if (!BasePropertyOverrides.bOverride_SplitParamIndex)
 	{
-		BasePropertyOverrides.SplitRefValue = SourceInstance->GetSplitRefValue();
+		BasePropertyOverrides.SplitParamIndex = SourceInstance->GetSplitParamIndex();
 	}
 	// End
 
