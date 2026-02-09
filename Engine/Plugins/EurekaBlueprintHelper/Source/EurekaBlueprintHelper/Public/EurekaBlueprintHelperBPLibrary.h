@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Materials/MaterialInstanceConstant.h"
 #include "EurekaBlueprintHelperBPLibrary.generated.h"
 
 /* 
@@ -28,11 +29,26 @@ class EUREKABLUEPRINTHELPER_API UEurekaBlueprintHelperBPLibrary : public UBluepr
 	GENERATED_UCLASS_BODY()
 
 public:
+#if WITH_EDITOR
 	/** * 设置贴图的最大尺寸 
-	 * @param Texture       目标贴图
-	 * @param NewMaxSize    新的最大尺寸 (例如 512, 1024, 2048)
-	 * @param bSaveAsset    是否自动标记资产为Dirty (建议为True)
+	 * @param Texture     = 目标贴图
+	 * @param NewMaxSize  = 新的最大尺寸 (例如 512, 1024, 2048)
+	 * @param bSaveAsset  = 是否自动标记资产为Dirty (建议为True)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Eureka BP Helper | Texture", meta=(ScriptMethod))
 	static void SetTextureMaxSize(UTexture2D* Texture, int32 NewMaxSize, bool bMarkDirty = true);
+	
+	/** * 设置材质实例的静态宏开关 - Boolean
+	 * @param Instance       =  目标材质实例
+	 * @param PropertyName   =  修改参数的名字
+	 * @param Value         =  修改值
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Eureka BP Helper | Material Instance", meta=(ScriptMethod))
+	static void SetMaterialInstanceBoolByName(UMaterialInstanceConstant* Instance, FName PropertyName, bool Value);
+	UFUNCTION(BlueprintCallable, Category = "Eureka BP Helper | Material Instance", meta=(ScriptMethod))
+	static void SetMaterialInstanceIntByName(UMaterialInstanceConstant* Instance, FName PropertyName, int32 Value);
+	
+	
+	
+#endif
 };

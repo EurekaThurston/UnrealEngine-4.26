@@ -974,7 +974,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	bIsMaterialEditorStatsMaterial = false;
 
 	// Start Eureka
-	bEnableSplitScreen = false;
+	EnableSplitScreen = false;
 	SplitParamIndex = 0;
 	// End
 
@@ -5796,7 +5796,7 @@ bool UMaterial::CastsRayTracedShadows() const
 
 bool UMaterial::IsSplitScreen() const
 {
-	return bEnableSplitScreen != 0;
+	return EnableSplitScreen != 0;
 }
 
 int32 UMaterial::GetSplitParamIndex() const

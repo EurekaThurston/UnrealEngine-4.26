@@ -3565,7 +3565,7 @@ FMaterialInstanceBasePropertyOverrides::FMaterialInstanceBasePropertyOverrides()
 	,OpacityMaskClipValue(.333333f)
 	 // Start Eureka
 	,bOverride_EnableSplitScreen(false)
-	,EnableSplitScreen(false)
+	,EnableSplitScreen(0)
 	,bOverride_SplitParamIndex(false)
 	,SplitParamIndex(0)
 	 // End
@@ -3588,6 +3588,8 @@ bool FMaterialInstanceBasePropertyOverrides::operator==(const FMaterialInstanceB
 			DitheredLODTransition == Other.DitheredLODTransition &&
 			// Start Eureka
 			bOverride_EnableSplitScreen == Other.bOverride_EnableSplitScreen &&
+			bOverride_SplitParamIndex == Other.bOverride_SplitParamIndex &&
+			EnableSplitScreen == Other.EnableSplitScreen &&
 			SplitParamIndex == Other.SplitParamIndex;
 			// End
 }
