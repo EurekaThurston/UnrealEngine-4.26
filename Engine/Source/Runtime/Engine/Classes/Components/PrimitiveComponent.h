@@ -698,6 +698,9 @@ public:
 
 	/** Last time the component was submitted for rendering (called FScene::AddPrimitive). */
 	float LastSubmitTime;
+	
+	UPROPERTY(EditAnywhere, AdvancedDisplay, Category=Rendering)
+	bool bUseSplitScreen = false;
 
 private:
 	/**

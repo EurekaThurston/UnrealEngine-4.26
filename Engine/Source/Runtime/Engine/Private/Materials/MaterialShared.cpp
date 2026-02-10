@@ -1786,7 +1786,7 @@ void FMaterial::SetupMaterialEnvironment(
 	OutEnvironment.SetDefine(TEXT("TRANSLUCENT_SHADOW_WITH_MASKED_OPACITY"), GetCastDynamicShadowAsMasked());
 	OutEnvironment.SetDefine(TEXT("MATERIAL_USE_ALPHA_TO_COVERAGE"), IsUsingAlphaToCoverage());
 	// Start Eureka
-	OutEnvironment.SetDefine(TEXT("USE_SPLIT_SCREEN"), IsSplitScreen() && (IsTranslucentBlendMode(GetBlendMode()) || IsMasked()));
+	//OutEnvironment.SetDefine(TEXT("USE_SPLIT_SCREEN"), IsSplitScreen() && (IsTranslucentBlendMode(GetBlendMode()) || IsMasked()));
 	// End
 
 	if (IsUsingFullPrecision())
