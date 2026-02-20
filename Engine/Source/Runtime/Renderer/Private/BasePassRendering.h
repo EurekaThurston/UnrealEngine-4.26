@@ -467,9 +467,22 @@ class TBasePassPS : public TBasePassPixelShaderBaseType<LightMapPolicyType>
 {
 	DECLARE_SHADER_TYPE(TBasePassPS,MeshMaterial);
 public:
+	
+	class FSplitScreen : SHADER_PERMUTATION_BOOL("USE_SPLIT_SCREEN");
+	using FPermutationDomain = TShaderPermutationDomain<FSplitScreen>;
 
 	static bool ShouldCompilePermutation(const FMeshMaterialShaderPermutationParameters& Parameters)
 	{
+		FPermutationDomain PermutationVector(Parameters.PermutationId);
+
+		if (PermutationVector.template Get<FSplitScreen>())
+		{
+			if (!Parameters.MaterialParameters.bIsSplitScreen)
+			{
+				return false;
+			}
+		}
+		
 		// Only compile skylight version for lit materials, and if the project allows them.
 		static const auto SupportStationarySkylight = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.SupportStationarySkylight"));
 		static const auto SupportAllShaderPermutations = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.SupportAllShaderPermutations"));
@@ -554,7 +567,8 @@ void GetBasePassShaders(
 	TShaderRef<FBaseHS>& HullShader,
 	TShaderRef<FBaseDS>& DomainShader,
 	TShaderRef<TBasePassVertexShaderPolicyParamType<LightMapPolicyType>>& VertexShader,
-	TShaderRef<TBasePassPixelShaderPolicyParamType<LightMapPolicyType>>& PixelShader
+	TShaderRef<TBasePassPixelShaderPolicyParamType<LightMapPolicyType>>& PixelShader,
+	const FPrimitiveSceneProxy* PrimitiveSceneProxy
 	)
 {
 	const EMaterialTessellationMode MaterialTessellationMode = Material.GetTessellationMode();
@@ -586,13 +600,25 @@ void GetBasePassShaders(
 	{
 		VertexShader = Material.GetShader<TBasePassVS<LightMapPolicyType, false> >(VertexFactoryType);
 	}
+
+	bool bUseSplitScreen = false;
+	if (Material.IsSplitScreen())
+	{
+		bUseSplitScreen = PrimitiveSceneProxy->GetUseSplitScreen();
+	}
 	if (bEnableSkyLight)
 	{
-		PixelShader = Material.GetShader<TBasePassPS<LightMapPolicyType, true> >(VertexFactoryType);
+		typename TBasePassPS<LightMapPolicyType, true>::FPermutationDomain PermutationVector;
+		PermutationVector.Set<TBasePassPS<LightMapPolicyType, true>::FSplitScreen>(bUseSplitScreen);
+		
+		PixelShader = Material.GetShader<TBasePassPS<LightMapPolicyType, true> >(VertexFactoryType, PermutationVector);
 	}
 	else
 	{
-		PixelShader = Material.GetShader<TBasePassPS<LightMapPolicyType, false> >(VertexFactoryType);
+		typename TBasePassPS<LightMapPolicyType, false>::FPermutationDomain PermutationVector;
+		PermutationVector.Set<TBasePassPS<LightMapPolicyType, false>::FSplitScreen>(bUseSplitScreen);
+		
+		PixelShader = Material.GetShader<TBasePassPS<LightMapPolicyType, false> >(VertexFactoryType, PermutationVector);
 	}
 }
 
@@ -608,7 +634,8 @@ void GetBasePassShaders<FUniformLightMapPolicy>(
 	TShaderRef<FBaseHS>& HullShader,
 	TShaderRef<FBaseDS>& DomainShader,
 	TShaderRef<TBasePassVertexShaderPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
-	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader
+	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader,
+	const FPrimitiveSceneProxy* PrimitiveSceneProxy
 	);
 
 class FBasePassMeshProcessor : public FMeshPassProcessor

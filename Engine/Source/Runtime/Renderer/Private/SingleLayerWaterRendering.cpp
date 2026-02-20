@@ -842,7 +842,8 @@ void FSingleLayerWaterPassMeshProcessor::Process(
 		WaterPassShaders.HullShader,
 		WaterPassShaders.DomainShader,
 		WaterPassShaders.VertexShader,
-		WaterPassShaders.PixelShader
+		WaterPassShaders.PixelShader,
+		PrimitiveSceneProxy
 		);
 
 	TBasePassShaderElementData<LightMapPolicyType> ShaderElementData(nullptr);

@@ -554,6 +554,7 @@ public:
 	inline bool NeedsLevelAddedToWorldNotification() const { return bNeedsLevelAddedToWorldNotification; }
 	inline bool IsComponentLevelVisible() const { return bIsComponentLevelVisible; }
 	inline bool ShouldReceiveMobileCSMShadows() const { return bReceiveMobileCSMShadows; }
+	inline bool GetUseSplitScreen() const { return bUseSplitScreen; }
 
 	/** Returns whether draws velocity in base pass. */
 	inline bool DrawsVelocity() const {
@@ -947,6 +948,8 @@ private:
 
 	/** This primitive has bRenderCustomDepth enabled */
 	uint8 bRenderCustomDepth : 1;
+	
+	uint8 bUseSplitScreen : 1;
 
 	/** Optionally write this stencil value during the CustomDepth pass */
 	uint8 CustomDepthStencilValue;
