@@ -448,17 +448,21 @@ void GetUniformBasePassShaders(
 		VertexShader = TShaderRef<TBasePassVertexShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassVS<TUniformLightMapPolicy<Policy>, false> >(VertexFactoryType));
 	}
 
-	
+	// Start Eureka
+	// 检查材质是否允许以及 Proxy 实例是否开启
 	bool bUseSplitScreen = false;
-	if (Material.IsSplitScreen())
+	if (Material.IsSplitScreen() && PrimitiveSceneProxy)
 	{
 		bUseSplitScreen = PrimitiveSceneProxy->GetUseSplitScreen();
 	}
+	// End Eureka
 	
 	if (bEnableSkyLight)
 	{
+		// Start Eureka
 		typename TBasePassPS<TUniformLightMapPolicy<Policy>, true>::FPermutationDomain PermutationVector;
 		PermutationVector.Set<TBasePassPS<TUniformLightMapPolicy<Policy>, true>::FSplitScreen>(bUseSplitScreen);
+		// End Eureka
 		
 		PixelShader = TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassPS<TUniformLightMapPolicy<Policy>, true> >(VertexFactoryType, PermutationVector));
 	}

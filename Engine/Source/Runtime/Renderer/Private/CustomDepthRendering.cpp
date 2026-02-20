@@ -162,7 +162,8 @@ void FCustomDepthPassMeshProcessor::Process(
 		DepthPassShaders.DomainShader,
 		DepthPassShaders.VertexShader,
 		DepthPassShaders.PixelShader,
-		ShaderPipeline
+		ShaderPipeline,
+		PrimitiveSceneProxy
 		);
 
 	FDepthOnlyShaderElementData ShaderElementData(MobileColorValue);

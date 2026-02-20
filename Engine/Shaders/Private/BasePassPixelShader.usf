@@ -1549,7 +1549,6 @@ void FPixelShaderInOut_MainPS(
 	}
 #if USE_SPLIT_SCREEN
 	Out.MRT[0].a = SplitScreenMask(MaterialParameters.SvPosition, GetMaterialSplitParamIndex());
-	
 #endif
 	
 	// End Eureka

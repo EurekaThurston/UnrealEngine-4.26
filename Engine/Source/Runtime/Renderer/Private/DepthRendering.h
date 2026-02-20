@@ -145,9 +145,26 @@ class FDepthOnlyPS : public FMeshMaterialShader
 {
 	DECLARE_SHADER_TYPE(FDepthOnlyPS,MeshMaterial);
 public:
+	// Start Eureka
+	class FSplitScreen : SHADER_PERMUTATION_BOOL("USE_SPLIT_SCREEN");
+	
+	using FPermutationDomain = TShaderPermutationDomain<FSplitScreen>;
+	// End Eureka
 
 	static bool ShouldCompilePermutation(const FMeshMaterialShaderPermutationParameters& Parameters)
 	{
+		// Start Eureka
+		FPermutationDomain PermutationVector(Parameters.PermutationId);
+		
+		if (PermutationVector.template Get<FSplitScreen>())
+		{
+			if (!Parameters.MaterialParameters.bIsSplitScreen)
+			{
+				return false;
+			}
+		}
+		// End Eureka
+		
 		if (IsTranslucentBlendMode(Parameters.MaterialParameters.BlendMode))
 		{
 			return Parameters.MaterialParameters.bIsTranslucencyWritingCustomDepth;
@@ -211,7 +228,9 @@ void GetDepthPassShaders(
 	TShaderRef<FDepthOnlyDS>& DomainShader,
 	TShaderRef<TDepthOnlyVS<bPositionOnly>>& VertexShader,
 	TShaderRef<FDepthOnlyPS<bUsesMobileColorValue>>& PixelShader,
-	FShaderPipelineRef& ShaderPipeline);
+	FShaderPipelineRef& ShaderPipeline,
+	const FPrimitiveSceneProxy* PrimitiveSceneProxy
+	);
 
 class FDepthPassMeshProcessor : public FMeshPassProcessor
 {
