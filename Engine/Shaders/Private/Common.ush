@@ -1855,11 +1855,6 @@ float3 DesaturateColor(float3 InColor, float Fraction)
 // 	return SplitParams.w ? Mask : 1.0f - Mask;
 // }
 
-/**
- * @param SvPosition       = FMaterialPixelParameters.SvPosition;
- * @param SplitParamIndex  = Index of SplitParams
- * @return                 = Split Mask (0.0 / 1.0); 1: Split Area; 0: Original Area
- */
 float SplitScreenMask(float4 SvPosition, int SplitParamIndex)
 {
 	// Calculate screen uv
@@ -1889,7 +1884,7 @@ float SplitScreenMask(float4 SvPosition, int SplitParamIndex)
 	}
 
 	float2 Offset = ScreenUV - SplitParams.rg;
-	// Offset /= View.ViewToClip[1][1]; // 没啥用
+	// Offset /= View.ViewToClip[1][1];
 	float Rotation = radians(SplitParams.b);
 	float2 Direction = float2(cos(Rotation) * ScreenAR, sin(Rotation));
 	float Dist = dot(Offset, Direction);
