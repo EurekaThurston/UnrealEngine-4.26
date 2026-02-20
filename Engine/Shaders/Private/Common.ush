@@ -1813,15 +1813,54 @@ float3 DesaturateColor(float3 InColor, float Fraction)
  * @param TargetScreenSize = Standard/Target Screen Size
  * @return                 = Split Mask (0.0 / 1.0); 1: Split Area; 0: Original Area
  */
-float SplitScreenMask(float4 SvPosition, int SplitParamIndex, float2 TargetScreenSize = float2(21.0f, 9.0f))
+// float SplitScreenMask(float4 SvPosition, int SplitParamIndex, float2 TargetScreenSize = float2(21.0f, 9.0f))
+// {
+// 	// Calculate aspect ratio corrected screen uv
+// 	float CurrentAR = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w;
+// 	float TargetAR = TargetScreenSize.x / TargetScreenSize.y;
+// 	float UVScale = CurrentAR / TargetAR;
+// 	float2 ScreenUV = (SvPosition.xy - View.ViewRectMin.xy) * View.ViewSizeAndInvSize.zw;
+// 	ScreenUV.x = (ScreenUV.x - 0.5 ) * UVScale + 0.5;
+// 	ScreenUV.x *= TargetAR;
+// 	
+// 	// Calculate split mask
+// 	float4 SplitParams = 0;
+// 	switch (SplitParamIndex)
+// 	{
+// 	case 1:
+// 		SplitParams = View.EurekaSplitParam1; 
+// 		break;
+// 	case 2:
+// 		SplitParams = View.EurekaSplitParam2; 
+// 		break;
+// 	case 3:
+// 		SplitParams = View.EurekaSplitParam3; 
+// 		break;
+// 	case 4:
+// 		SplitParams = View.EurekaSplitParam4; 
+// 		break;
+// 	default:
+// 		SplitParams = float4(0.0f, 0.0f, 0.0f, 1.0f); // 默认a分量为1，防止fallback到默认的时候物体消失
+// 		break;
+// 	}
+// 	float2 Pivot = SplitParams.rg;
+// 	Pivot.x = (Pivot.x - 0.5 ) * UVScale + 0.5;
+// 	Pivot.x *= TargetAR;
+// 	float2 Offset = ScreenUV - Pivot;
+// 	float Rotation = radians(SplitParams.b);
+// 	float2 Direction = float2(cos(Rotation), sin(Rotation));
+// 	float Dist = dot(Offset, Direction);
+// 	float Mask = step(0, Dist);
+// 	
+// 	return SplitParams.w ? Mask : 1.0f - Mask;
+// }
+
+float SplitScreenMask(float4 SvPosition, int SplitParamIndex)
 {
-	// Calculate aspect ratio corrected screen uv
-	float CurrentAR = View.ViewSizeAndInvSize.x / View.ViewSizeAndInvSize.y;
-	float TargetAR = TargetScreenSize.x / TargetScreenSize.y;
-	float UVScale = CurrentAR / TargetAR;
+	// Calculate screen uv
 	float2 ScreenUV = (SvPosition.xy - View.ViewRectMin.xy) * View.ViewSizeAndInvSize.zw;
-	ScreenUV.x = (ScreenUV.x - 0.5 ) * UVScale + 0.5;
-	ScreenUV.x *= TargetAR;
+	ScreenUV = (ScreenUV - 0.5f) * 2.0f;
+	float ScreenAR = View.ViewSizeAndInvSize.x * View.ViewSizeAndInvSize.w;
 	
 	// Calculate split mask
 	float4 SplitParams = 0;
@@ -1840,15 +1879,14 @@ float SplitScreenMask(float4 SvPosition, int SplitParamIndex, float2 TargetScree
 		SplitParams = View.EurekaSplitParam4; 
 		break;
 	default:
-		SplitParams = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		SplitParams = float4(1.0f, 1.0f, 0.0f, 0.0f); // 默认位置为1，防止fallback到默认的时候物体消失
 		break;
 	}
-	float2 Pivot = SplitParams.rg;
-	Pivot.x = (Pivot.x - 0.5 ) * UVScale + 0.5;
-	Pivot.x *= TargetAR;
-	float2 Offset = ScreenUV - Pivot;
+
+	float2 Offset = ScreenUV - SplitParams.rg;
+	// Offset /= View.ViewToClip[1][1];
 	float Rotation = radians(SplitParams.b);
-	float2 Direction = float2(cos(Rotation), sin(Rotation));
+	float2 Direction = float2(cos(Rotation) * ScreenAR, sin(Rotation));
 	float Dist = dot(Offset, Direction);
 	float Mask = step(0, Dist);
 	

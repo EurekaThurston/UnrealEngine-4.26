@@ -71,7 +71,8 @@ void FEditorPrimitivesBasePassMeshProcessor::ProcessDeferredShadingPath(const FM
 		BasePassShaders.HullShader,
 		BasePassShaders.DomainShader,
 		BasePassShaders.VertexShader,
-		BasePassShaders.PixelShader
+		BasePassShaders.PixelShader,
+		PrimitiveSceneProxy
 		);
 
 	FMeshPassProcessorRenderState DrawRenderState(PassDrawRenderState);

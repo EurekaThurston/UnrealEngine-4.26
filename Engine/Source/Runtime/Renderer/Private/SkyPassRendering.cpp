@@ -67,7 +67,8 @@ void FSkyPassMeshProcessor::Process(
 		SkyPassShaders.HullShader,
 		SkyPassShaders.DomainShader,
 		SkyPassShaders.VertexShader,
-		SkyPassShaders.PixelShader
+		SkyPassShaders.PixelShader,
+		PrimitiveSceneProxy
 		);
 
 	TBasePassShaderElementData<LightMapPolicyType> ShaderElementData(nullptr);

@@ -77,10 +77,12 @@ IMPLEMENT_MATERIAL_SHADER_TYPE(,FDepthOnlyDS,TEXT("/Engine/Private/DepthOnlyVert
 IMPLEMENT_MATERIAL_SHADER_TYPE(template<>,FDepthOnlyPS<true>,TEXT("/Engine/Private/DepthOnlyPixelShader.usf"),TEXT("Main"),SF_Pixel);
 IMPLEMENT_MATERIAL_SHADER_TYPE(template<>,FDepthOnlyPS<false>,TEXT("/Engine/Private/DepthOnlyPixelShader.usf"),TEXT("Main"),SF_Pixel);
 
-IMPLEMENT_SHADERPIPELINE_TYPE_VS(DepthNoPixelPipeline, TDepthOnlyVS<false>, true);
-IMPLEMENT_SHADERPIPELINE_TYPE_VS(DepthPosOnlyNoPixelPipeline, TDepthOnlyVS<true>, true);
-IMPLEMENT_SHADERPIPELINE_TYPE_VSPS(DepthNoColorOutputPipeline, TDepthOnlyVS<false>, FDepthOnlyPS<false>, true);
-IMPLEMENT_SHADERPIPELINE_TYPE_VSPS(DepthWithColorOutputPipeline, TDepthOnlyVS<false>, FDepthOnlyPS<true>, true);
+// Start Eureka
+// IMPLEMENT_SHADERPIPELINE_TYPE_VS(DepthNoPixelPipeline, TDepthOnlyVS<false>, true);
+// IMPLEMENT_SHADERPIPELINE_TYPE_VS(DepthPosOnlyNoPixelPipeline, TDepthOnlyVS<true>, true);
+// IMPLEMENT_SHADERPIPELINE_TYPE_VSPS(DepthNoColorOutputPipeline, TDepthOnlyVS<false>, FDepthOnlyPS<false>, true);
+// IMPLEMENT_SHADERPIPELINE_TYPE_VSPS(DepthWithColorOutputPipeline, TDepthOnlyVS<false>, FDepthOnlyPS<true>, true);
+// End Eureka
 
 static FORCEINLINE bool UseShaderPipelines(ERHIFeatureLevel::Type InFeatureLevel)
 {
@@ -97,19 +99,37 @@ void GetDepthPassShaders(
 	TShaderRef<FDepthOnlyDS>& DomainShader,
 	TShaderRef<TDepthOnlyVS<bPositionOnly>>& VertexShader,
 	TShaderRef<FDepthOnlyPS<bUsesMobileColorValue>>& PixelShader,
-	FShaderPipelineRef& ShaderPipeline)
+	FShaderPipelineRef& ShaderPipeline,
+	const FPrimitiveSceneProxy* PrimitiveSceneProxy
+	)
 {
-	if (bPositionOnly && !bUsesMobileColorValue)
+	// Start Eureka
+	ShaderPipeline = FShaderPipelineRef();
+	// 检查材质是否允许以及 Proxy 实例是否开启
+	bool bUseSplitScreen = false;
+	if (Material.IsSplitScreen() && PrimitiveSceneProxy)
 	{
-		ShaderPipeline = UseShaderPipelines(FeatureLevel) ? Material.GetShaderPipeline(&DepthPosOnlyNoPixelPipeline, VertexFactoryType) : FShaderPipelineRef();
-		VertexShader = ShaderPipeline.IsValid()
-			? ShaderPipeline.GetShader<TDepthOnlyVS<bPositionOnly> >()
-			: Material.GetShader<TDepthOnlyVS<bPositionOnly> >(VertexFactoryType);
+		bUseSplitScreen = PrimitiveSceneProxy->GetUseSplitScreen();
+	}
+	
+	typename FDepthOnlyPS<bUsesMobileColorValue>::FPermutationDomain PermutationVector;
+	PermutationVector.Set<typename FDepthOnlyPS<bUsesMobileColorValue>::FSplitScreen>(bUseSplitScreen);
+	// End Eureka
+	
+	if (bPositionOnly && !bUsesMobileColorValue && !bUseSplitScreen)
+	{
+		// ShaderPipeline = UseShaderPipelines(FeatureLevel) ? Material.GetShaderPipeline(&DepthPosOnlyNoPixelPipeline, VertexFactoryType) : FShaderPipelineRef();
+		// VertexShader = ShaderPipeline.IsValid()
+		// 	? ShaderPipeline.GetShader<TDepthOnlyVS<bPositionOnly> >()
+		// 	: Material.GetShader<TDepthOnlyVS<bPositionOnly> >(VertexFactoryType);
+		VertexShader = Material.GetShader<TDepthOnlyVS<bPositionOnly> >(VertexFactoryType);
 	}
 	else
 	{
-		const bool bNeedsPixelShader = bUsesMobileColorValue || !Material.WritesEveryPixel() || Material.MaterialUsesPixelDepthOffset() || Material.IsTranslucencyWritingCustomDepth();
-
+		// Start Eureka
+		const bool bNeedsPixelShader = bUsesMobileColorValue || !Material.WritesEveryPixel() || Material.MaterialUsesPixelDepthOffset() || Material.IsTranslucencyWritingCustomDepth() || bUseSplitScreen;
+		// Start Eureka
+		
 		const EMaterialTessellationMode TessellationMode = Material.GetTessellationMode();
 		if (RHISupportsTessellation(GShaderPlatformForFeatureLevel[FeatureLevel])
 			&& VertexFactoryType->SupportsTessellationShaders() 
@@ -121,29 +141,35 @@ void GetDepthPassShaders(
 			DomainShader = Material.GetShader<FDepthOnlyDS>(VertexFactoryType);
 			if (bNeedsPixelShader)
 			{
-				PixelShader = Material.GetShader<FDepthOnlyPS<bUsesMobileColorValue>>(VertexFactoryType);
+				PixelShader = Material.GetShader<FDepthOnlyPS<bUsesMobileColorValue>>(VertexFactoryType, PermutationVector);
 			}
 		}
 		else
 		{
 			HullShader.Reset();
 			DomainShader.Reset();
-			bool bUseShaderPipelines = UseShaderPipelines(FeatureLevel);
+			
+			VertexShader = Material.GetShader<TDepthOnlyVS<bPositionOnly> >(VertexFactoryType);
 			if (bNeedsPixelShader)
 			{
-				if (bUsesMobileColorValue)
-				{
-					ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthWithColorOutputPipeline, VertexFactoryType, false) : FShaderPipelineRef();
-				}
-				else
-				{
-					ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthNoColorOutputPipeline, VertexFactoryType, false) : FShaderPipelineRef();
-				}
+				PixelShader = Material.GetShader<FDepthOnlyPS<bUsesMobileColorValue>>(VertexFactoryType, PermutationVector);
 			}
-			else
-			{
-				ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthNoPixelPipeline, VertexFactoryType, false) : FShaderPipelineRef();
-			}
+			// bool bUseShaderPipelines = UseShaderPipelines(FeatureLevel) && !bUseSplitScreen;
+			// if (bNeedsPixelShader)
+			// {
+			// 	if (bUsesMobileColorValue)
+			// 	{
+			// 		ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthWithColorOutputPipeline, VertexFactoryType, false) : FShaderPipelineRef();
+			// 	}
+			// 	else
+			// 	{
+			// 		ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthNoColorOutputPipeline, VertexFactoryType, false) : FShaderPipelineRef();
+			// 	}
+			// }
+			// else
+			// {
+			// 	ShaderPipeline = bUseShaderPipelines ? Material.GetShaderPipeline(&DepthNoPixelPipeline, VertexFactoryType, false) : FShaderPipelineRef();
+			// }
 
 			if (ShaderPipeline.IsValid())
 			{
@@ -158,7 +184,7 @@ void GetDepthPassShaders(
 				VertexShader = Material.GetShader<TDepthOnlyVS<bPositionOnly> >(VertexFactoryType);
 				if (bNeedsPixelShader)
 				{
-					PixelShader = Material.GetShader<FDepthOnlyPS<bUsesMobileColorValue>>(VertexFactoryType);
+					PixelShader = Material.GetShader<FDepthOnlyPS<bUsesMobileColorValue>>(VertexFactoryType, PermutationVector);
 				}
 			}
 		}
@@ -174,7 +200,8 @@ void GetDepthPassShaders(
 		TShaderRef<FDepthOnlyDS>& DomainShader, \
 		TShaderRef<TDepthOnlyVS<bPositionOnly>>& VertexShader, \
 		TShaderRef<FDepthOnlyPS<bUsesMobileColorValue>>& PixelShader, \
-		FShaderPipelineRef& ShaderPipeline \
+		FShaderPipelineRef& ShaderPipeline, \
+		const FPrimitiveSceneProxy* PrimitiveSceneProxy \
 	);
 
 IMPLEMENT_GetDepthPassShaders( true, false );
@@ -848,7 +875,8 @@ void FDepthPassMeshProcessor::Process(
 		DepthPassShaders.DomainShader,
 		DepthPassShaders.VertexShader,
 		DepthPassShaders.PixelShader,
-		ShaderPipeline
+		ShaderPipeline,
+		PrimitiveSceneProxy // ADD @Eureka 
 		);
 
 	FMeshPassProcessorRenderState DrawRenderState(PassDrawRenderState);
@@ -925,11 +953,17 @@ void FDepthPassMeshProcessor::AddMeshBatch(const FMeshBatch& RESTRICT MeshBatch,
 			&& ShouldIncludeDomainInMeshPass(Material.GetMaterialDomain())
 			&& ShouldIncludeMaterialInDefaultOpaquePass(Material))
 		{
+			// Start Eureka
+			const bool bUseSplitScreen = PrimitiveSceneProxy && PrimitiveSceneProxy->GetUseSplitScreen();
+			// End Eureka
+			
 			if (BlendMode == BLEND_Opaque
 				&& EarlyZPassMode != DDM_MaskedOnly
 				&& MeshBatch.VertexFactory->SupportsPositionOnlyStream()
 				&& !Material.MaterialModifiesMeshPosition_RenderThread()
-				&& Material.WritesEveryPixel())
+				&& Material.WritesEveryPixel()
+				&& !bUseSplitScreen // ADD @Eureka 如果开启分屏则不进入这个if
+				)
 			{
 				const FMaterialRenderProxy& DefaultProxy = *UMaterial::GetDefaultMaterial(MD_Surface)->GetRenderProxy();
 				const FMaterial& DefaultMaterial = *DefaultProxy.GetMaterial(FeatureLevel);
@@ -943,7 +977,7 @@ void FDepthPassMeshProcessor::AddMeshBatch(const FMeshBatch& RESTRICT MeshBatch,
 					const FMaterialRenderProxy* EffectiveMaterialRenderProxy = &MaterialRenderProxy;
 					const FMaterial* EffectiveMaterial = &Material;
 
-					if (!bMaterialMasked && !Material.MaterialModifiesMeshPosition_RenderThread())
+					if (!bMaterialMasked && !Material.MaterialModifiesMeshPosition_RenderThread() && !bUseSplitScreen)
 					{
 						// Override with the default material for opaque materials that are not two sided
 						EffectiveMaterialRenderProxy = UMaterial::GetDefaultMaterial(MD_Surface)->GetRenderProxy();

@@ -145,6 +145,7 @@ FPrimitiveSceneProxy::FPrimitiveSceneProxy(const UPrimitiveComponent* InComponen
 ,	bUseEditorCompositing(InComponent->bUseEditorCompositing)
 ,	bReceiveMobileCSMShadows(InComponent->bReceiveMobileCSMShadows)
 ,	bRenderCustomDepth(InComponent->bRenderCustomDepth)
+,	bUseSplitScreen(InComponent->bUseSplitScreen)
 ,	CustomDepthStencilValue(InComponent->CustomDepthStencilValue)
 ,	CustomDepthStencilWriteMask(FRendererStencilMaskEvaluation::ToStencilMask(InComponent->CustomDepthStencilWriteMask))
 ,	LightingChannelMask(GetLightingChannelMaskForStruct(InComponent->LightingChannels))

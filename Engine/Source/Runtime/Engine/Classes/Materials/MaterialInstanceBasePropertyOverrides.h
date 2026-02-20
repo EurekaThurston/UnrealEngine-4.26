@@ -71,7 +71,7 @@ struct ENGINE_API FMaterialInstanceBasePropertyOverrides
 	UPROPERTY(EditAnywhere, Category = Material)
 	uint8 bOverride_SplitParamIndex : 1;
 	
-	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_SplitParamIndex"))
+	UPROPERTY(EditAnywhere, Category = Material, meta = (EditCondition = "bOverride_SplitParamIndex", ClampMin = "1", ClampMax = "4", UIMin = "1", UIMax = "4"))
 	int32 SplitParamIndex;
 	// End
 

@@ -414,7 +414,8 @@ void GetUniformBasePassShaders(
 	TShaderRef<FBaseHS>& HullShader,
 	TShaderRef<FBaseDS>& DomainShader,
 	TShaderRef<TBasePassVertexShaderPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
-	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader
+	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader,
+	const FPrimitiveSceneProxy* PrimitiveSceneProxy
 	)
 {
 	const EMaterialTessellationMode MaterialTessellationMode = Material.GetTessellationMode();
@@ -447,9 +448,23 @@ void GetUniformBasePassShaders(
 		VertexShader = TShaderRef<TBasePassVertexShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassVS<TUniformLightMapPolicy<Policy>, false> >(VertexFactoryType));
 	}
 
+	// Start Eureka
+	// 检查材质是否允许以及 Proxy 实例是否开启
+	bool bUseSplitScreen = false;
+	if (Material.IsSplitScreen() && PrimitiveSceneProxy)
+	{
+		bUseSplitScreen = PrimitiveSceneProxy->GetUseSplitScreen();
+	}
+	// End Eureka
+	
 	if (bEnableSkyLight)
 	{
-		PixelShader = TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassPS<TUniformLightMapPolicy<Policy>, true> >(VertexFactoryType));
+		// Start Eureka
+		typename TBasePassPS<TUniformLightMapPolicy<Policy>, true>::FPermutationDomain PermutationVector;
+		PermutationVector.Set<TBasePassPS<TUniformLightMapPolicy<Policy>, true>::FSplitScreen>(bUseSplitScreen);
+		// End Eureka
+		
+		PixelShader = TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassPS<TUniformLightMapPolicy<Policy>, true> >(VertexFactoryType, PermutationVector));
 	}
 	else
 	{
@@ -459,7 +474,10 @@ void GetUniformBasePassShaders(
 		}
 		else
 		{
-			PixelShader = TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassPS<TUniformLightMapPolicy<Policy>, false> >(VertexFactoryType));
+			typename TBasePassPS<TUniformLightMapPolicy<Policy>, false>::FPermutationDomain PermutationVector;
+			PermutationVector.Set<TBasePassPS<TUniformLightMapPolicy<Policy>, false>::FSplitScreen>(bUseSplitScreen);
+		
+			PixelShader = TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>::ReinterpretCast(Material.GetShader<TBasePassPS<TUniformLightMapPolicy<Policy>, false> >(VertexFactoryType, PermutationVector));
 		}
 	}
 }
@@ -476,51 +494,52 @@ void GetBasePassShaders<FUniformLightMapPolicy>(
 	TShaderRef<FBaseHS>& HullShader,
 	TShaderRef<FBaseDS>& DomainShader,
 	TShaderRef<TBasePassVertexShaderPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
-	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader
+	TShaderRef<TBasePassPixelShaderPolicyParamType<FUniformLightMapPolicy>>& PixelShader,
+	const FPrimitiveSceneProxy* RESTRICT PrimitiveSceneProxy
 	)
 {
 	switch (LightMapPolicy.GetIndirectPolicy())
 	{
 	case LMP_PRECOMPUTED_IRRADIANCE_VOLUME_INDIRECT_LIGHTING:
-		GetUniformBasePassShaders<LMP_PRECOMPUTED_IRRADIANCE_VOLUME_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_PRECOMPUTED_IRRADIANCE_VOLUME_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_CACHED_VOLUME_INDIRECT_LIGHTING:
-		GetUniformBasePassShaders<LMP_CACHED_VOLUME_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_CACHED_VOLUME_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_CACHED_POINT_INDIRECT_LIGHTING:
-		GetUniformBasePassShaders<LMP_CACHED_POINT_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_CACHED_POINT_INDIRECT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_DIRECTIONAL_LIGHT_LIGHTING:
-		GetUniformBasePassShaders<LMP_SIMPLE_DIRECTIONAL_LIGHT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_DIRECTIONAL_LIGHT_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_NO_LIGHTMAP:
-		GetUniformBasePassShaders<LMP_SIMPLE_NO_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_NO_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_LIGHTMAP_ONLY_LIGHTING:
-		GetUniformBasePassShaders<LMP_SIMPLE_LIGHTMAP_ONLY_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_LIGHTMAP_ONLY_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_STATIONARY_PRECOMPUTED_SHADOW_LIGHTING:
-		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_PRECOMPUTED_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_PRECOMPUTED_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_STATIONARY_SINGLESAMPLE_SHADOW_LIGHTING:
-		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_SINGLESAMPLE_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_SINGLESAMPLE_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_SIMPLE_STATIONARY_VOLUMETRICLIGHTMAP_SHADOW_LIGHTING:
-		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_VOLUMETRICLIGHTMAP_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_SIMPLE_STATIONARY_VOLUMETRICLIGHTMAP_SHADOW_LIGHTING>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_LQ_LIGHTMAP:
-		GetUniformBasePassShaders<LMP_LQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_LQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_HQ_LIGHTMAP:
-		GetUniformBasePassShaders<LMP_HQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_HQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	case LMP_DISTANCE_FIELD_SHADOWS_AND_HQ_LIGHTMAP:
-		GetUniformBasePassShaders<LMP_DISTANCE_FIELD_SHADOWS_AND_HQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_DISTANCE_FIELD_SHADOWS_AND_HQ_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	default:										
 		check(false);
 	case LMP_NO_LIGHTMAP:
-		GetUniformBasePassShaders<LMP_NO_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader);
+		GetUniformBasePassShaders<LMP_NO_LIGHTMAP>(Material, VertexFactoryType, FeatureLevel, bEnableAtmosphericFog, bEnableSkyLight, bUse128bitRT, HullShader, DomainShader, VertexShader, PixelShader, PrimitiveSceneProxy);
 		break;
 	}
 }
@@ -1257,7 +1276,8 @@ void FBasePassMeshProcessor::Process(
 		BasePassShaders.HullShader,
 		BasePassShaders.DomainShader,
 		BasePassShaders.VertexShader,
-		BasePassShaders.PixelShader
+		BasePassShaders.PixelShader,
+		PrimitiveSceneProxy
 		);
 
 	FMeshPassProcessorRenderState DrawRenderState(PassDrawRenderState);
