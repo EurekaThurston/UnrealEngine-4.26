@@ -1850,10 +1850,6 @@ float SplitScreenMask(float4 SvPosition, int SplitParamIndex, float2 TargetScree
 	Offset.x = CenteredUV.x - CenteredOrigin.x;
 	Offset.y = CenteredUV.y * (ReferenceAR / ScreenAR) - CenteredOrigin.y;
 
-	// 如果是 Maintain Y FOV 
-	// Offset.x = CenteredUV.x * (ScreenAR / ReferenceAR) - CenteredOrigin.x;
-	// Offset.y = CenteredUV.y - CenteredOrigin.y;
-
 	float Rotation = radians(SplitParams.b);
 
 	// 使用 ReferenceAR，以保证在基准空间下的斜率正确
